@@ -6,6 +6,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-indigo-500 bg-gradient-to-br from-indigo-400 to-indigo-600">
       <div className="bg-white overflow-hidden shadow-xl">
+
         {/* Main content area */}
         <div className="grid grid-cols-1 lg:grid-cols-2 h-[100vh]">
           {/* Left column */}
@@ -110,6 +111,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+
         {/* Stats section */}
         {/* <div className="bg-navy-900 text-white py-10 px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center 
         w-full">
@@ -130,6 +132,7 @@ export default function Home() {
             <div className="text-indigo-200 mt-1">Total Seat</div>
           </div>
         </div> */}
+        
       </div>
     </div>
   )
