@@ -3,10 +3,13 @@ import {create} from 'zustand';
 const useAuthStore = create((set,get) => ({
     isAuth: false,
     userData: [],
-    isSubmitting: false,
-    error: null,
+    token: null,
 
-    setIsAuth: (isAuth) => set({isAuth}),
+    setIsAuth: (isAuth) => set({isAuth: isAuth}),
+    
+    setUserData: (userData) => set({userData: userData}),
+
+    setToken: (token) => set({token: token}),
 
     getUserData: async() => {
         try {
@@ -19,8 +22,9 @@ const useAuthStore = create((set,get) => ({
             });
             const data = await res.json();
             if(res.ok) {
-                set({userData: data});
+                set({userData: data.user});
                 set({isAuth: true});
+                set({token: localStorage.getItem("token")});
             } else {
                 set({isAuth: false});
                 localStorage.removeItem("token");
@@ -29,40 +33,6 @@ const useAuthStore = create((set,get) => ({
             console.error("Error fetching user data:", error);
         }
     },
-
-    SignUp: async(userData) => {
-        set({isSubmitting: true});
-        set({error: null});
-        try{
-            const res = await fetch("http://127.0.0.1:8000/api/auth/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(userData),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                set({error: null});
-                localStorage.setItem("token", data.token);
-                set({isAuth: true});
-            } else {
-                if(data?.detail?.split(" ")[0] === "Username") {
-                    set({error:{"username": data.detail}});
-                    return;
-                }
-                if(data?.detail?.split(" ")[0] === "Email") {
-                    set({error:{"email": data.detail}});
-                    return;
-                }
-                set({ errors: { ...get().errors, global: data.detail } });
-            }
-        } catch (error) {
-            set({ errors: { ...get().errors, global: "An error occurred. Please try again." } });
-        } finally {
-            set({isSubmitting: false});
-        }
-    }
     
 }));
 

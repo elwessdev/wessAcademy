@@ -11,9 +11,9 @@ interface AuthModalProps {
 }
 
 export function Signup({onClose}: AuthModalProps) {
-    const SignUp = authStore((state => state.SignUp));
-    const isSubmitting = authStore((state => state.isSubmitting));
-    const error = authStore((state => state.error));
+    const setToken = authStore((state => state.setToken));
+    const getUserData = authStore((state => state.getUserData)); 
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -48,23 +48,35 @@ export function Signup({onClose}: AuthModalProps) {
         if(errors.username || errors.email || errors.major || errors.password || errors.confirmPassword) {
             return;
         }
-        try {
-            await SignUp(formData);
-            if(error){
-                setFormErrors((prev) => ({
-                    ...prev,
-                    global: error,
-                }));
+        try{
+            const res = await fetch("http://127.0.0.1:8000/api/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem("token", data.token);
+                setToken(data.token);
+                getUserData();
+                onClose?.();
+            } else {
+                if(data?.detail?.split(" ")[0] === "Username") {
+                    setFormErrors({ ...formErrors, username: data.detail });
+                    return;
+                }
+                if(data?.detail?.split(" ")[0] === "Email") {
+                    setFormErrors({ ...formErrors, email: data.detail });
+                    return;
+                }
+                setFormErrors({ ...formErrors, global: data.detail });
             }
-            // if(!error){
-            //     onClose?.();
-            // }
         } catch (error) {
-            console.error("Error signing up:", error);
-            setFormErrors((prev) => ({
-                ...prev,
-                global: "An error occurred. Please try again.",
-            }));
+            setFormErrors({ ...formErrors, global: "An error occurred. Please try again." });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
