@@ -2,12 +2,72 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { Select } from "antd";
+import { glob } from "fs";
+import authStore from "@/app/store/authStore";
 
 interface AuthModalProps {
     onClose?: () => void;
 }
 
 export function Signup({onClose}: AuthModalProps) {
+    const SignUp = authStore((state => state.SignUp));
+    const isSubmitting = authStore((state => state.isSubmitting));
+    const error = authStore((state => state.error));
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        major: "",
+        password: "",
+        confirmPassword: "",
+    });
+    const [formErrors, setFormErrors] = useState({
+        username: "",
+        email: "",
+        major: "",
+        password: "",
+        confirmPassword: "",
+        global: "",
+    });
+
+    const handleSubmit = async(e: React.FormEvent) => {
+        e.preventDefault();
+        const errors = {
+            username: formData.username ? "" : "Username is required",
+            email: formData.email ? "" : "Email is required",
+            major: formData.major ? "" : "Major is required",
+            password: formData.password ? "" : "Password is required",
+            confirmPassword: formData.confirmPassword
+                ? formData.confirmPassword === formData.password
+                    ? ""
+                    : "Passwords do not match"
+                : "Confirm Password is required",
+            global: "",
+        };
+        setFormErrors(errors);
+        if(errors.username || errors.email || errors.major || errors.password || errors.confirmPassword) {
+            return;
+        }
+        try {
+            await SignUp(formData);
+            if(error){
+                setFormErrors((prev) => ({
+                    ...prev,
+                    global: error,
+                }));
+            }
+            // if(!error){
+            //     onClose?.();
+            // }
+        } catch (error) {
+            console.error("Error signing up:", error);
+            setFormErrors((prev) => ({
+                ...prev,
+                global: "An error occurred. Please try again.",
+            }));
+        }
+    };
+
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div
@@ -28,105 +88,136 @@ export function Signup({onClose}: AuthModalProps) {
                     <p className="text-gray-500">Create an account to get started.</p>
                     </div>
 
-                    <form className="space-y-5">
-                    <div>
-                        <label
-                        htmlFor="signup-username"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                        Username
-                        </label>
-                        <input
-                        type="text"
-                        id="signup-username"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        placeholder="Enter your username"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                        htmlFor="signup-email"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                        Email
-                        </label>
-                        <input
-                        type="email"
-                        id="signup-email"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        placeholder="Enter your email"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                        htmlFor="major"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                        Major
-                        </label>
-                        <select
-                        id="major"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        >
-                        <option value="">Select your major</option>
-                        <option value="computer-science">Computer Science</option>
-                        <option value="design">Design</option>
-                        <option value="business">Business</option>
-                        <option value="engineering">Engineering</option>
-                        <option value="other">Other</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label
-                        htmlFor="signup-password"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                        Password
-                        </label>
-                        <input
-                        type="password"
-                        id="signup-password"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        placeholder="••••••••"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                        htmlFor="confirm-password"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                        Confirm Password
-                        </label>
-                        <input
-                        type="password"
-                        id="confirm-password"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        placeholder="••••••••"
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                    <form
+                        className="space-y-5"
+                        onSubmit={handleSubmit}
                     >
-                        Sign up
-                    </button>
+                        <div>
+                            <label
+                                htmlFor="signup-username"
+                                className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                            Username
+                            </label>
+                            <input
+                                type="text"
+                                id="signup-username"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                placeholder="Enter your username"
+                                value={formData.username}
+                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            />
+                            {formErrors.username && (
+                                <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="signup-email"
+                                className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                            Email
+                            </label>
+                            <input
+                                type="email"
+                                id="signup-email"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                placeholder="Enter your email"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
+                            {formErrors.email && (
+                                <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="major"
+                                className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                            Major
+                            </label>
+                            <select
+                                id="major"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                value={formData.major}
+                                onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+                                >
+                                    <option value="" hidden>Select your major</option>
+                                    <option value="computer-science">Computer Science</option>
+                            </select>
+                            {formErrors.major && (
+                                <p className="text-red-500 text-sm mt-1">{formErrors.major}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="signup-password"
+                                className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                            Password
+                            </label>
+                            <input
+                                type="password"
+                                id="signup-password"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            />
+                            {formErrors.password && (
+                                <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="confirm-password"
+                                className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                            Confirm Password
+                            </label>
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                placeholder="••••••••"
+                                value={formData.confirmPassword}
+                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                            />
+                            {formErrors.confirmPassword && (
+                                <p className="text-red-500 text-sm mt-1">{formErrors.confirmPassword}</p>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting 
+                                    ? <span className="loading loading-spinner loading-md"></span>
+                                    : "Sign up"
+                                }
+                        </button>
+                        {formErrors.global && (
+                            <p className="text-red-500 text-sm mt-1">{formErrors.global}</p>
+                        )}
                     </form>
 
                     <div className="mt-8 text-center">
-                    <p className="text-sm text-gray-600">
-                        Already have an account?{" "}
-                        <button
-                        className="text-indigo-600 font-medium hover:text-indigo-700"
-                        onClick={() => setView("signin")}
-                        >
-                        Sign in
-                        </button>
-                    </p>
+                        <p className="text-sm text-gray-600">
+                            Already have an account?{" "}
+                            <button
+                            className="text-indigo-600 font-medium hover:text-indigo-700"
+                            onClick={() => onClose()}
+                            >
+                                Sign in
+                            </button>
+                        </p>
                     </div>
                 </div>
             </div>

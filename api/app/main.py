@@ -34,4 +34,4 @@ async def root():
     return {"message": "Hello World"}
 
 # Routers
-app.include_router(auth_router.router, prefix="/auth", tags=["Auth"])
+app.include_router(auth_router.router, prefix="/api/auth", tags=["Auth"])

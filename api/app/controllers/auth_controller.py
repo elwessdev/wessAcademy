@@ -23,8 +23,16 @@ async def signup(user):
         email=user.email,
         password=hashed_pwd
     )
-    await database.execute(query)
-    return {"message": "User created successfully"}
+    save = await database.execute(query)
+    if not save:
+        raise HTTPException(status_code=500, detail="User creation failed")
+    # Retrieve the inserted user's ID
+    query = select(users.c.id).where(users.c.email == user.email)
+    inserted_user = await database.fetch_one(query)
+    if not inserted_user:
+        raise HTTPException(status_code=500, detail="Failed to retrieve user ID")
+    token = create_token(str(inserted_user["id"]) + "LPSDOIOUAOPEUY")
+    return {"message": "User created successfully", "token": token}
 
 # Signin
 async def signin(user):
@@ -38,4 +46,4 @@ async def signin(user):
         )
     # generate token
     token = create_token(str(db_user["id"]) + "LPSDOIOUAOPEUY")
-    return {"message":"login successfully", "token": "bearer "+token}
+    return {"message":"login successfully", "token":token}
