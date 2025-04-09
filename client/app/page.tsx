@@ -1,20 +1,28 @@
+"use client"
 import Image from "next/image"
 import Link from "next/link"
 import { CheckCircle, Bell } from "lucide-react"
+import { useRef } from "react";
+import { Signin } from "@/components/signin"
+import { Signup } from "@/components/signup"
 
 export default function Home() {
+  const signInModel = useRef(null);
+  const signUpModel = useRef(null);
+
   return (
     <div className="min-h-screen bg-indigo-500 bg-gradient-to-br from-indigo-400 to-indigo-600">
       <div className="bg-white overflow-hidden shadow-xl">
 
         {/* Main content area */}
         <div className="grid grid-cols-1 lg:grid-cols-2 h-[100vh]">
+
           {/* Left column */}
           <div className="p-8 lg:p-12 h-[100vh] relative">
             <div className="mb-16">
               <Image
                 src="/logo3.png"
-                alt="PFIEDLER Education"
+                alt="wessAcademy logo"
                 width={180}
                 height={69}
                 className="h-12 w-[180px] h-[69px] object-contain"
@@ -39,6 +47,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+
           {/* Right column */}
           <div className="bg-indigo-500 p-8 lg:p-12 relative h-[100vh]">
             {/* Navigation */}
@@ -53,18 +62,26 @@ export default function Home() {
                 Courses
               </Link>
               <div className="flex justify-end items-center space-x-2 text-white">
-                <Link
-                  href="/"
+                <button
+                  onClick={()=>{
+                    if (signInModel.current) {
+                      signInModel.current.showModal();
+                    }
+                  }}
                   className="px-4 py-2 bg-white text-indigo-600 font-medium rounded-lg hover:bg-gray-100 transition-all duration-200"
                 >
                   Sign in
-                </Link>
-                <Link
-                  href="/"
+                </button>
+                <button
+                  onClick={()=>{
+                    if (signUpModel.current) {
+                      signUpModel.current.showModal();
+                    }
+                  }}
                   className="px-4 py-2 bg-white text-indigo-600 font-medium rounded-lg hover:bg-gray-100 transition-all duration-200"
                 >
                   Sign up
-                </Link>
+                </button>
               </div>
             </nav>
             {/* Student image and notifications */}
@@ -132,7 +149,27 @@ export default function Home() {
             <div className="text-indigo-200 mt-1">Total Seat</div>
           </div>
         </div> */}
-        
+
+        <dialog ref={signInModel} id="signInModel" className="modal">
+          <div className="modal-box">
+            <Signin onClose={()=>{
+              if (signInModel.current) {
+                signInModel.current.close();
+              }
+            }} />
+          </div>
+        </dialog>
+
+        <dialog ref={signUpModel} id="signUpModel" className="modal">
+          <div className="modal-box">
+            <Signup onClose={()=>{
+              if (signUpModel.current) {
+                signUpModel.current.close();
+              }
+            }} />
+          </div>
+        </dialog>
+
       </div>
     </div>
   )

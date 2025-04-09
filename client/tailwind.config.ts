@@ -122,7 +122,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // '@tailwindcss/postcss': {}, // Removed invalid plugin
+  ],
 }
 export default config
 

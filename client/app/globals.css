@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@plugin "daisyui";
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -10,6 +11,9 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+}
+input,button,textarea {
+  outline: none;
 }
 
 @layer utilities {
