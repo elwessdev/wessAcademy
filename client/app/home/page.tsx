@@ -161,13 +161,13 @@ export default function Home() {
                                 href="#"
                                 className="text-gray-600 hover:text-indigo-600 transition-colors"
                             >
-                                Bookmark
+                                Notes
                             </Link>
                             <Link
                                 href="#"
                                 className="text-gray-600 hover:text-indigo-600 transition-colors"
                             >
-                                Reports
+                                My Courses
                             </Link>
                         </div>
                         <div className="relative">
