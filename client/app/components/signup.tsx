@@ -4,15 +4,14 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { Select } from "antd";
 import { glob } from "fs";
-import authStore from "@/app/store/authStore";
+import useAuthStore from "@/app/store/authStore";
 
 interface AuthModalProps {
     onClose?: () => void;
 }
 
 export function Signup({onClose}: AuthModalProps) {
-    const setToken = authStore((state => state.setToken));
-    const getUserData = authStore((state => state.getUserData)); 
+    const getUserData = useAuthStore((state) => state.getUserData);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
@@ -32,7 +31,8 @@ export function Signup({onClose}: AuthModalProps) {
 
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
-        const errors = {
+        console.log(formData);
+        let errors = {
             username: formData.username ? "" : "Username is required",
             email: formData.email ? "" : "Email is required",
             major: formData.major ? "" : "Major is required",
@@ -45,6 +45,7 @@ export function Signup({onClose}: AuthModalProps) {
             global: "",
         };
         setFormErrors(errors);
+        console.log(errors);
         if(errors.username || errors.email || errors.major || errors.password || errors.confirmPassword) {
             return;
         }
@@ -54,15 +55,21 @@ export function Signup({onClose}: AuthModalProps) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    username: formData.username,
+                    email: formData.email,
+                    major: formData.major,
+                    password: formData.password,
+                }),
             });
             const data = await res.json();
+            console.log(data,res);
             if (res.ok) {
                 localStorage.setItem("token", data.token);
-                setToken(data.token);
                 getUserData();
-                onClose?.();
+                // onClose?.();
             } else {
+                console.log(data.detail.split(" ")[0]);
                 if(data?.detail?.split(" ")[0] === "Username") {
                     setFormErrors({ ...formErrors, username: data.detail });
                     return;
@@ -211,9 +218,9 @@ export function Signup({onClose}: AuthModalProps) {
                             disabled={isSubmitting}
                         >
                             {isSubmitting 
-                                    ? <span className="loading loading-spinner loading-md"></span>
-                                    : "Sign up"
-                                }
+                                ? <span className="loading loading-spinner loading-md"></span>
+                                : "Sign up"
+                            }
                         </button>
                         {formErrors.global && (
                             <p className="text-red-500 text-sm mt-1">{formErrors.global}</p>
@@ -225,7 +232,7 @@ export function Signup({onClose}: AuthModalProps) {
                             Already have an account?{" "}
                             <button
                             className="text-indigo-600 font-medium hover:text-indigo-700"
-                            onClick={() => onClose()}
+                            onClick={() => onClose?.()}
                             >
                                 Sign in
                             </button>

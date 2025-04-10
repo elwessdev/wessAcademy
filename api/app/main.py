@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.db import engine, metadata, database
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth_router
+from app.routers import auth_router, course_router
 
 # FastAPI app
 app = FastAPI()
@@ -33,5 +33,7 @@ async def shutdown():
 async def root():
     return {"message": "Hello World"}
 
+
 # Routers
 app.include_router(auth_router.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(course_router.router, prefix="/api/course", tags=["Course"])

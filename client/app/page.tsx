@@ -3,8 +3,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { CheckCircle, Bell } from "lucide-react"
 import { useRef } from "react";
-import { Signin } from "@/components/signin"
-import { Signup } from "@/components/signup"
+import { Signin } from "@/app/components/signin"
+import { Signup } from "@/app/components/signup"
 
 export default function Home() {
   const signInModel = useRef(null);

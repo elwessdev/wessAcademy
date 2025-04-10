@@ -21,6 +21,7 @@ async def signup(user):
     query = users.insert().values(
         username=user.username,
         email=user.email,
+        major=user.major,
         password=hashed_pwd
     )
     save = await database.execute(query)
@@ -31,7 +32,7 @@ async def signup(user):
     inserted_user = await database.fetch_one(query)
     if not inserted_user:
         raise HTTPException(status_code=500, detail="Failed to retrieve user ID")
-    token = create_token(str(inserted_user["id"]) + "LPSDOIOUAOPEUY")
+    token = create_token(str(inserted_user["id"]) + "LPSDOIOUAOPEUY",2*60)
     return {"message": "User created successfully", "token": token}
 
 # Signin
@@ -45,5 +46,31 @@ async def signin(user):
             detail="Incorrect email/username or password"
         )
     # generate token
-    token = create_token(str(db_user["id"]) + "LPSDOIOUAOPEUY")
-    return {"message":"login successfully", "token":token}
+    tokenTime = 30
+    if user.remember:
+        tokenTime = 3 * 24 * 60
+    token = create_token(str(db_user["id"]) + "LPSDOIOUAOPEUY",tokenTime)
+    return {
+        "user":{
+            "id": db_user["id"],
+            "username": db_user["username"],
+            "email": db_user["email"],
+            "major": db_user["major"],
+            "created_at": db_user["created_at"]
+        }, 
+        "token":token
+    }
+
+# Get User Data
+async def getUserData(userID):
+    query = select(users).where(users.c.id == userID)
+    db_user = await database.fetch_one(query)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": db_user["id"],
+        "username": db_user["username"],
+        "email": db_user["email"],
+        "major": db_user["major"],
+        "created_at": db_user["created_at"]
+    }

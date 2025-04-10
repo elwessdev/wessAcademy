@@ -10,4 +10,5 @@ users = Table(
     Column("email", String, unique=True, nullable=False),
     Column("password", String, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
+    Column("major", String, nullable=False),
 )
