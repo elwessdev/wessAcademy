@@ -1,23 +1,47 @@
 "use client"
 import { ChevronRight } from 'lucide-react'
 import useAuthStore from '../store/authStore'
-import { useQuery } from 'react-query';
-import { useEffect } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import Image from 'next/image';
+import { message } from 'antd';
 
 const Courses = () => {
+    const queryClient = useQueryClient();
     const userData = useAuthStore((state => state.userData));
 
     const {data:courses, isLoading, error} = useQuery({
         queryKey: ['courses'],
-        queryFn: () => fetch('http://127.0.0.1:8000/api/course/coursesList').then(res => res.json()),
-        enabled: !!userData,
-        refetchOnWindowFocus: false,
+        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/coursesList`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then(res => res.json()),
+        enabled: !!userData
     })
 
-    useEffect(()=>{
-        console.log(courses)
-    },[courses])
+    const handleEnrollCourse = async(courseID:number) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/enrollCourse?courseID=${courseID}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                // message.success("Successfully enrolled in course!");
+                queryClient.invalidateQueries({ queryKey: ['courses'] });
+                queryClient.invalidateQueries({ queryKey: ['myCourses'] });
+            } else {
+                console.error("Failed to enroll in course:", data);
+            }
+        } catch(error) {
+            console.error("Error enrolling in course:", error);
+        }
+    }
 
     return (
         <div className="h-[calc(100vh-74px)] overflow-auto">
@@ -32,8 +56,11 @@ const Courses = () => {
             <div className="flex flex-wrap p-8 gap-6">
                 {isLoading && <div className="text-center text-gray-500">Loading...</div>}
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
-                {courses?.myCourses && courses?.myCourses?.map((course: any) => (
-                    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]">
+                {courses?.myCourses && courses?.myCourses?.map((course: any, idx: number) => (
+                    <div 
+                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]"
+                        key={idx}
+                    >
                         <Image
                             src={course?.course_image}
                             alt="Course Image"
@@ -62,7 +89,7 @@ const Courses = () => {
                                 </div>
                                 <div className="flex items-center mt-[8px]">
                                     <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-blue-500 h-full rounded-full" style={{ width: `${course?.progress}%` }}></div>
+                                        <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${course?.progress}%` }}></div>
                                     </div>
                                     <span className="text-xs text-gray-500 ml-2">{course?.progress}%</span>
                                 </div>
@@ -70,8 +97,11 @@ const Courses = () => {
                         </div>
                     </div>
                 ))}
-                {courses?.courses && courses?.courses?.map((course: any) => (
-                    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]">
+                {courses?.courses && courses?.courses?.map((course: any, idx: number) => (
+                    <div 
+                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]"
+                        key={idx}
+                    >
                         <Image
                             src={course?.course_image}
                             alt="Course Image"
@@ -87,7 +117,10 @@ const Courses = () => {
                                 {course?.course_description}
                             </p>
                             <div className="flex justify-center items-center absolute bottom-[10px] left-[18px] w-[90%]">
-                                <button className="px-[30px] py-[9px] rounded-[4px] bg-[#6665f1] text-white font-medium text-sm flex items-center transition-all duration-2000">
+                                <button 
+                                    className="px-[30px] py-[9px] rounded-[4px] bg-[#6665f1] text-white font-medium text-sm flex items-center transition-all duration-2000"
+                                    onClick={() => handleEnrollCourse(course?.id)}
+                                >
                                     Start
                                 </button>
                             </div>

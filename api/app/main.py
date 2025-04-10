@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from app.utils.security import verify_and_get_user
 from app.db import engine, metadata, database
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth_router, course_router

@@ -4,10 +4,24 @@ import { Settings, LogOut, ChevronRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import useAuthStore from "../store/authStore";
+import { useQuery } from "react-query";
 
 const sideBar = () => {
     const userData = useAuthStore((state) => state.userData);
     const logout = useAuthStore((state) => state.logout);
+
+        const {data:courses, isLoading, error} = useQuery({
+            queryKey: ['myCourses'],
+            queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/coursesList`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }).then(res => res.json()),
+            enabled: !!userData,
+            refetchOnWindowFocus: false,
+        })
+
     return (
         <div className="w-72 bg-white shadow-lg z-10">
             <div className="p-6 border-b border-gray-100 px-[15px] py-[9px]">
@@ -52,93 +66,37 @@ const sideBar = () => {
                     <BookOpen size={18} className="text-indigo-500 mr-2" />
                     <h3 className="text-gray-700 font-medium">My Courses</h3>
                 </div>
-
-                {/* Course 1 */}
-                <div className="mb-4">
-                    <div className="flex items-center mb-2">
-                    <div className="w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
-                        <div className="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs">
-                        UI
+                {isLoading && <div className="text-center text-gray-500">Loading...</div>}
+                {error && <div className="text-center text-red-500">Error loading courses</div>}
+                {courses?.myCourses && courses?.myCourses?.map((course: any, idx: number) => (
+                    <div className="mb-4" key={idx}>
+                        <div className="flex items-center mb-2">
+                            <div className="w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
+                                <div className="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs">
+                                    {course?.course_name?.slice(0, 1).toUpperCase() || ""}
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <div className="text-sm font-medium text-gray-700">{course?.course_name}</div>
+                                <div className="flex items-center mt-1">
+                                    <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+                                        <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${course?.progress}%` }}></div>
+                                    </div>
+                                    <span className="text-xs text-gray-500 ml-2">{course?.progress}%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-700">UI Design Masterclass</div>
-                        <div className="flex items-center mt-1">
-                        <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                            <div className="bg-indigo-500 h-full rounded-full" style={{ width: "75%" }}></div>
-                        </div>
-                        <span className="text-xs text-gray-500 ml-2">75%</span>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-                {/* Course 2 */}
-                <div className="mb-4">
-                    <div className="flex items-center mb-2">
-                    <div className="w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
-                        <div className="w-full h-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xs">
-                        JS
-                        </div>
-                    </div>
-                    <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-700">JavaScript Basics</div>
-                        <div className="flex items-center mt-1">
-                        <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                            <div className="bg-blue-500 h-full rounded-full" style={{ width: "45%" }}></div>
-                        </div>
-                        <span className="text-xs text-gray-500 ml-2">45%</span>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-                {/* Course 3 */}
-                <div className="mb-4">
-                    <div className="flex items-center mb-2">
-                    <div className="w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
-                        <div className="w-full h-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs">
-                        RE
-                        </div>
-                    </div>
-                    <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-700">React Framework</div>
-                        <div className="flex items-center mt-1">
-                        <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                            <div className="bg-emerald-500 h-full rounded-full" style={{ width: "90%" }}></div>
-                        </div>
-                        <span className="text-xs text-gray-500 ml-2">90%</span>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-                {/* Course 4 */}
-                <div className="mb-4">
-                    <div className="flex items-center mb-2">
-                    <div className="w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
-                        <div className="w-full h-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white text-xs">
-                        UX
-                        </div>
-                    </div>
-                    <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-700">UX Research</div>
-                        <div className="flex items-center mt-1">
-                        <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                            <div className="bg-amber-500 h-full rounded-full" style={{ width: "30%" }}></div>
-                        </div>
-                        <span className="text-xs text-gray-500 ml-2">30%</span>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-                <Link
-                    href="/all-courses"
-                    className="text-indigo-600 text-sm font-medium flex items-center justify-center mt-2 hover:text-indigo-700"
-                >
-                    View all courses <ChevronRight size={14} className="ml-1" />
-                </Link>
+                ))}
+                {(!isLoading&&courses?.myCourses?.length > 0) 
+                    ? <Link
+                        href="/all-courses"
+                        className="text-indigo-600 text-sm font-medium flex items-center justify-center mt-2 hover:text-indigo-700"
+                    >
+                        View all courses <ChevronRight size={14} className="ml-1" />
+                    </Link>
+                    : <div className="text-center text-gray-500 text-[15px]">No courses found</div>
+                }
             </div>
 
             <div className="absolute bottom-4 left-6 text-gray-400 text-sm">

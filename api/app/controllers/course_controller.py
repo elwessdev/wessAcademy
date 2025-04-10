@@ -26,3 +26,16 @@ async def getCourses(userID):
     ]
 
     return {"courses":db_courses,"myCourses":db_user_courses}
+
+# Enroll Course
+async def enrollCourse(courseID, userID):
+    query = userCourse.insert().values(
+        user_id=userID,
+        course_id=courseID,
+        progress=0,
+        status="In Progress"
+    )
+    save = await database.execute(query)
+    if not save:
+        raise HTTPException(status_code=500, detail="Course enrollment failed")
+    return {"message": "Course enrolled successfully"}

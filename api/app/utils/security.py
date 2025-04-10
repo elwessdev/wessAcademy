@@ -1,9 +1,8 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Header
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import users
 from app.db import database
 
@@ -33,7 +32,6 @@ def create_token(data: str, expires: int):
         "HS256"
     )
 
-
 # Verify user token
 async def verify_and_get_user(token: str):
     try:
@@ -60,3 +58,13 @@ async def verify_and_get_user(token: str):
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
+# Middleware for authentication
+async def auth_required(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid token")
+    token = authorization.split("Bearer ")[1]
+    user = await verify_and_get_user(token)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return user

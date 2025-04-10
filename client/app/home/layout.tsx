@@ -26,13 +26,13 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                                 href="#"
                                 className="text-gray-600 hover:text-indigo-600 transition-colors"
                             >
-                                Notes
+                                My Courses
                             </Link>
                             <Link
                                 href="#"
                                 className="text-gray-600 hover:text-indigo-600 transition-colors"
                             >
-                                My Courses
+                                Notes
                             </Link>
                         </div>
                         <div className="relative">
