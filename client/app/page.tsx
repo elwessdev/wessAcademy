@@ -61,6 +61,9 @@ export default function Home() {
               <Link href="/" className="hover:text-indigo-200 transition-all duration-200">
                 Courses
               </Link>
+              <Link href="/" className="hover:text-indigo-200 transition-all duration-200">
+                Courses
+              </Link>
               <div className="flex justify-end items-center space-x-2 text-white">
                 <button
                   onClick={()=>{
