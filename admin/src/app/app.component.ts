@@ -10,7 +10,7 @@ import { DashboardComponent } from "./components/dashboard.component"
   template: `
     <div class="flex min-h-screen bg-gray-50">
       <app-sidebar></app-sidebar>
-      <app-dashboard></app-dashboard>
+      <app-dashboard class="w-full"></app-dashboard>
     </div>
   `,
   styles: [`

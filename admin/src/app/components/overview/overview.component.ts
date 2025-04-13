@@ -11,7 +11,7 @@ import { FormsModule } from "@angular/forms"
     standalone: true,
     imports: [CommonModule, ChartModule, CardModule, ButtonModule, DropdownModule, FormsModule],
     templateUrl:"./overview.component.html",
-    styleUrl: "./overview.component.scss",
+    styleUrls: ["./overview.component.scss"],
 })
 export class OverviewComponent {
     selectedTimeRange: any
@@ -23,20 +23,26 @@ export class OverviewComponent {
     // ]
     summaryStats = [
         {
+            label: "Total Users",
+            value: "5",
+            icon: "fas fa-users",
+            iconBg: "bg-indigo-500",
+        },
+        {
             label: "Total Courses",
             value: "600",
             icon: "fas fa-chalkboard-user",
             iconBg: "bg-indigo-500",
         },
         {
-            label: "Total Users",
+            label: "Total Major",
             value: "5",
-            icon: "fas fa-users",
-            iconBg: "bg-blue-500",
+            icon: "fas fa-graduation-cap",
+            iconBg: "bg-indigo-500",
         },
     ]
 
-    trafficCoursesData: any
+    TrafficCoursesData: any
     MajorData: any
 
     chartOptions: any
@@ -50,7 +56,7 @@ export class OverviewComponent {
     }
 
     initChartData() {
-        this.trafficCoursesData = {
+        this.TrafficCoursesData = {
             labels: ["PHP", "Java", "Python", "JavaScript", "C#"],
             datasets: [
                 {
@@ -60,7 +66,7 @@ export class OverviewComponent {
             ],
         }
         this.MajorData = {
-            labels: ["Computer Science", "Electrical Engineering", "Mechanical Engineering"],
+            labels: ["CS", "Electrical Eng", "Mechanical Eng"],
             datasets: [
                 {
                     data: [58, 32, 10],

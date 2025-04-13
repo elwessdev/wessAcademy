@@ -23,7 +23,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router"
 })
 export class SidebarComponent {
   navItems = [
-    { label: "Overview", route: "/", icon: "fas fa-chart-pie" },
+    { label: "Overview", route: "/overview", icon: "fas fa-chart-pie" },
     { label: "Courses", route: "/courses", icon: "fas fa-chalkboard-user" },
     { label: "Users", route: "/users", icon: "fas fa-users" },
   ]
