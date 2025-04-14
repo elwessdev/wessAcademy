@@ -11,11 +11,12 @@ import { QuillModule } from 'ngx-quill';
     standalone: true,
     imports: [FormsModule,InputTextModule,TextareaModule,ButtonModule,CommonModule,QuillModule],
     templateUrl: './courseEditor.component.html',
-    // styleUrl: './courses.component.scss'
+    // styleUrls: ['./courseEditor.component.scss']
 })
 export class CourseEditor {
     title: string = '';
     description: string = '';
+    editorContent: string = '';
     sections: any = [
         {
             id: 1,

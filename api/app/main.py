@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException
-from app.utils.security import verify_and_get_user
+from fastapi import FastAPI
 from app.db import engine, metadata, database
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth_router, course_router
+from app.routers import auth_router, course_router, admin_router
 
 # FastAPI app
 app = FastAPI()
@@ -38,3 +37,4 @@ async def root():
 # Routers
 app.include_router(auth_router.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(course_router.router, prefix="/api/course", tags=["Course"])
+app.include_router(admin_router.router, prefix="/api/dashboard", tags=["Dashboard"])

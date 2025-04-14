@@ -9,7 +9,7 @@
         *ngFor="let item of navItems" 
         [routerLink]="item.route" 
         routerLinkActive="bg-indigo-50 text-indigo-600"
-        class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-semibold"
       >
         <i class="mr-3 text-indigo-500" [ngClass]="item.icon"></i>
         <span>{{ item.label }}</span>
@@ -17,7 +17,7 @@
     </nav>
   </div>
 
-  <div class="p-4 text-gray-400 text-sm">
+  <div class="p-4 text-gray-400 text-sm text-center font-semibold">
     &copy; 2025 wessAcademy.
   </div>
 </div>
