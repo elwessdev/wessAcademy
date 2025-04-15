@@ -6,7 +6,8 @@ from app.routers import auth_router, course_router, admin_router
 # FastAPI app
 app = FastAPI()
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:4200"
 ]
 
 # Middleware

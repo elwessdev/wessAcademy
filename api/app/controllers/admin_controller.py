@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from app.db import database
 from app.models.user import users
-from app.models.course import course, userCourse
+from app.models.course import course, userCourse, courseSections
 from sqlalchemy import select, func
 
 
@@ -85,6 +85,34 @@ async def deleteCourse(course_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Add Course
+async def addCourse(course_data: dict):
+    try:
+        query = course.insert().values(
+            course_image=course_data["courseImage"],
+            course_name=course_data["title"],
+            course_description=course_data["description"],
+            course_major=course_data["majors"]
+        )
+        result = await database.execute(query)
+
+        if result is None:
+            raise HTTPException(status_code=404, detail="Could not add course")
+
+        for section in course_data["sections"]:
+            query = courseSections.insert().values(
+                course_id=result,
+                section_number=section["number"],
+                section_title=section["title"],
+                section_description=section["description"],
+                section_content=section["content"],
+            )
+            await database.execute(query)
+        
+        return {"message": "Course added successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Get Users
 async def getUsers():
     try:
@@ -110,7 +138,6 @@ async def blockUser(user_id: int):
         return {"message": "User blocked successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 

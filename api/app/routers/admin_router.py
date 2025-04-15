@@ -30,6 +30,11 @@ async def getAllCourses():
 async def deleteCourse(course_id: int):
     return await admin_controller.deleteCourse(course_id)
 
+# Add Course
+@router.post("/add_course")
+async def addCourse(course: dict):
+    return await admin_controller.addCourse(course)
+
 
 ###### Users Page ######
 # Get Users

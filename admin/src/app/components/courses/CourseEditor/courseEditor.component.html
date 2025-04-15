@@ -5,26 +5,31 @@
             <!-- <p class="text-gray-500">Good</p> -->
         </div>
     </div>
+    
     <div class="mx-auto flex w-[80%] flex-wrap bg-white p-[20px] border border-[#EEE] rounded-[5px] gap-2">
-        <input pInputText [(ngModel)]="title" type="text"  placeholder="Course Image Link" class="w-[100%]" />
+        <input pInputText [(ngModel)]="courseImage" type="text"  placeholder="Course Image Link" class="w-[100%]" />
         <input pInputText [(ngModel)]="title" type="text"  placeholder="Course Title" class="w-[100%]" />
+        <div class="card flex justify-center w-full">
+            <p-multiselect [options]="majors" [(ngModel)]="selectedMajor" placeholder="Select Majors" optionLabel="name" display="chip" styleClass="w-[100%]" />
+        </div>
         <textarea pTextarea [(ngModel)]="description" placeholder="Course Description" class="w-[100%] resize-none" rows="5"></textarea>
     </div>
+    <p class="" >{{errorMessage}}</p>
     <div class="w-[80%] mx-auto mt-4 flex items-center justify-end">
         <p-button label="Add Section" icon="pi pi-plus" (click)="addSection()" />
     </div>
     <div class="sections mt-4">
         <div *ngFor="let section of sections">
             <div class="section mx-auto flex h-fit w-[80%] flex-wrap bg-white p-[20px] border border-[#EEE] rounded-[5px] gap-2 mb-4">
-                <h2 class="font-medium text-[18px]">Section {{section.id}}</h2>
+                <h2 class="font-medium text-[18px]">Section {{section.number}}</h2>
                 <input pInputText [(ngModel)]="section.title" type="text"  placeholder="Section title" class="w-[100%]" />
                 <textarea [(ngModel)]="section.description" pTextarea placeholder="Small description about section" class="w-[100%] resize-none" rows="3"></textarea>
-                <quill-editor [(ngModel)]="editorContent"></quill-editor>
+                <quill-editor [(ngModel)]="section.content"></quill-editor>
             </div>
         </div>
     </div>
     <div class="w-[80%] mx-auto mt-4 flex items-center justify-center">
         <p-button label="Cancel" icon="pi pi-times" class="mr-2" />
-        <p-button label="Save" icon="pi pi-check" />
+        <p-button label="Save" icon="pi pi-check" (onClick)="saveCourse()" />
     </div>
 </div>

@@ -5,6 +5,7 @@ import { CardModule } from "primeng/card"
 import { ButtonModule } from "primeng/button"
 import { DropdownModule } from "primeng/dropdown"
 import { FormsModule } from "@angular/forms"
+import { OverviewApiService } from "../../services/overview-api.service"
 
 @Component({
     selector: "app-root",
@@ -14,66 +15,88 @@ import { FormsModule } from "@angular/forms"
     styleUrls: ["./overview.component.scss"],
 })
 export class OverviewComponent {
-    selectedTimeRange: any
-    // timeRanges = [
-    //     { name: "Last 7 days", code: "7d" },
-    //     { name: "Last 30 days", code: "30d" },
-    //     { name: "Last 90 days", code: "90d" },
-    //     { name: "This year", code: "year" },
-    // ]
     summaryStats = [
         {
             label: "Total Users",
-            value: "5",
+            value: "",
             icon: "fas fa-users",
             iconBg: "bg-indigo-500",
         },
         {
             label: "Total Courses",
-            value: "600",
+            value: "",
             icon: "fas fa-chalkboard-user",
             iconBg: "bg-indigo-500",
         },
         {
             label: "Total Major",
-            value: "5",
+            value: "",
             icon: "fas fa-graduation-cap",
             iconBg: "bg-indigo-500",
         },
     ]
-
     TrafficCoursesData: any
     MajorData: any
-
     chartOptions: any
     pieChartOptions: any
 
+    constructor(private overviewAPI: OverviewApiService) {}
+
     ngOnInit() {
-        // this.selectedTimeRange = this.timeRanges[0]
-
-        this.initChartData()
         this.initChartOptions()
-    }
 
-    initChartData() {
-        this.TrafficCoursesData = {
-            labels: ["PHP", "Java", "Python", "JavaScript", "C#"],
-            datasets: [
-                {
-                    data: [35, 25, 20, 15, 5],
-                    backgroundColor: ["#6366f1", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
-                },
-            ],
-        }
-        this.MajorData = {
-            labels: ["CS", "Electrical Eng", "Mechanical Eng"],
-            datasets: [
-                {
-                    data: [58, 32, 10],
-                    backgroundColor: ["#6366f1", "#3b82f6", "#10b981"],
-                },
-            ],
-        }
+        this.overviewAPI.getTotal().subscribe({
+            next: (data) => {
+                console.log("get total data", data)
+                this.summaryStats[0].value = data.users
+                this.summaryStats[1].value = data.courses
+                // this.summaryStats[2].value = data.total_major
+            },
+            error: (err) => console.error("get total error", err),
+        });
+
+        this.overviewAPI.getMajorStatistics().subscribe({
+            next: (data) => {
+                console.log("get major statistics data", data)
+                this.MajorData = {
+                    labels: [],
+                    datasets: [
+                        {
+                            data: [],
+                            // backgroundColor: ["#6366f1", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
+                        },
+                    ],
+                }
+                data.map((item: any) => {
+                    this.MajorData.labels.push(item.major)
+                    this.MajorData.datasets[0].data.push(item.count_1)
+                });
+            },
+            error: (err) => console.error("get major statistics error", err),
+        })
+
+        this.overviewAPI.getCourseEnrollment().subscribe({
+            next: (data) => {
+                console.log("get course enrollment data", data)
+                this.TrafficCoursesData = {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: "Course Enrollment",
+                            data: [],
+                            backgroundColor: "#6366f1",
+                            // borderColor: "#6366f1",
+                            // tension: 0.4,
+                        },
+                    ],
+                }
+                data.map((item: any) => {
+                    this.TrafficCoursesData.labels.push(item.course_name)
+                    this.TrafficCoursesData.datasets[0].data.push(item.enrollment_count)
+                });
+            },
+            error: (err) => console.error("get course enrollment error", err),
+        })
     }
 
     initChartOptions() {

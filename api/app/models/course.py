@@ -23,3 +23,15 @@ userCourse = Table(
     Column("status", String, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
+
+courseSections = Table(
+    "course_sections",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("course_id", Integer, nullable=False),
+    Column("section_number", Integer, nullable=False),
+    Column("section_title", String, nullable=False),
+    Column("section_description", String, nullable=False),
+    Column("section_content", String, nullable=False),
+    Column("created_at", DateTime, server_default=func.now(), nullable=False),
+)
