@@ -6,13 +6,28 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { Message } from 'primeng/message';
 import { CoursesApiService } from '../../../services/courses-api.service';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
     selector: 'app-courseEditor',
     standalone: true,
-    imports: [FormsModule,InputTextModule,TextareaModule,ButtonModule,CommonModule,QuillModule,MultiSelectModule],
+    imports: [
+        FormsModule,
+        InputTextModule,
+        TextareaModule,
+        ButtonModule,
+        CommonModule,
+        QuillModule,
+        MultiSelectModule,
+        Message,
+        Toast
+    ],
     templateUrl: './courseEditor.component.html',
+    providers: [MessageService],
     // styleUrls: ['./courseEditor.component.scss']
 })
 export class CourseEditor {
@@ -32,7 +47,11 @@ export class CourseEditor {
     majors: any[] = [];
     selectedMajor: any[] = [];
 
-    constructor(private CoursesAPI: CoursesApiService){}
+    constructor(
+        private router: Router, 
+        private CoursesAPI: CoursesApiService, 
+        private messageService: MessageService
+    ){}
 
     ngOnInit() {
         this.majors= [
@@ -64,16 +83,21 @@ export class CourseEditor {
 
     saveCourse(){
         this.errorMessage = '';
-        if(!this.title || !this.description || !this.courseImage){
-            this.errorMessage = 'Please fill in all fields.';
+        if(!this.title.length || !this.description.length || !this.courseImage.length || this.selectedMajor.length == 0){
+            this.errorMessage = 'Please fill Basics Information';
             return;
         }
+        let isSectionValid = false;
         this.sections.forEach((section:any) => {
-            if(!section.title || !section.description || !section.content){
-                this.errorMessage = 'Please fill in all fields.';
+            if(!section.title.length || !section.description.length || !section.content.length){
+                isSectionValid = true;
                 return;
             }
         });
+        if(isSectionValid){
+            this.errorMessage = 'Please fill all sections';
+            return;
+        }
         let majorsList = "";
         this.selectedMajor.forEach((major:any) => {
             majorsList += major.name + ", ";
@@ -89,10 +113,13 @@ export class CourseEditor {
         this.CoursesAPI.addCourse(this.newCourseData).subscribe({
             next: (data) => {
                 console.log('add course data', data);
+                // this.router.navigate(['/courses']);
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Course added successfully' });
             }
             , error: (err) => {
                 console.error('add course error', err);
                 this.errorMessage = 'Error adding course. Please try again.';
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something wrong, try again' });
             }
         });
     }

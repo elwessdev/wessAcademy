@@ -27,10 +27,6 @@ export class CoursesComponent {
 
   constructor(private router: Router, private CoursesAPI: CoursesApiService) {}
 
-  goToEditor() {
-    this.router.navigate(['/editor']);
-  }
-
   ngOnInit() {
     this.majors = [
       { name: 'New York', code: 'NY' },
@@ -48,4 +44,19 @@ export class CoursesComponent {
       error: (err) => console.error('get courses error', err)
     });
   }
+
+  goToEditor() {
+    this.router.navigate(['/editor']);
+  }
+
+  deleteCourse(courseID: number) {
+    this.CoursesAPI.deleteCourse(courseID).subscribe({
+      next: (data) => {
+        console.log('delete course data', data);
+        this.courses = this.courses.filter(course => course.id !== courseID);
+      },
+      error: (err) => console.error('delete course error', err)
+    });
+  }
+
 }
