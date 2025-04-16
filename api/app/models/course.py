@@ -35,3 +35,11 @@ courseSections = Table(
     Column("section_content", String, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
+
+majorsTable = Table(
+    "majors",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("major_name", String, nullable=False),
+    Column("created_at", DateTime, server_default=func.now(), nullable=False),
+)

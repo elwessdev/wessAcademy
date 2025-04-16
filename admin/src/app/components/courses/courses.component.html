@@ -1,4 +1,5 @@
-<div class="flex-1 p-6 overflow-auto">
+<div class="p-6 overflow-auto h-[100vh]">
+    <p-toast />
     <div class="mb-6 flex justify-between items-center">
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Courses</h1>
@@ -12,13 +13,13 @@
                 <p-inputicon styleClass="pi pi-search" />
                 <input type="text" pInputText placeholder="Search..." />
             </p-iconfield>
-            <p-select [options]="majors" [(ngModel)]="selectedMajor" optionLabel="name" placeholder="Select Major" class="w-full md:w-56" />
+            <p-select [options]="majors" [(ngModel)]="selectedMajor" (ngModelChange)="selectMajor()" optionLabel="name" placeholder="Select Major" class="w-full md:w-56" />
         </div>
         <p-button (click)="goToEditor()" label="Add Course" icon="pi pi-plus" />
     </div>
 
     <div class="flex flex-wrap gap-6">
-        <div *ngFor="let course of courses" class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]">
+        <div *ngFor="let course of filteredCourses" class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]">
             <img
                 src={{course.course_image}}
                 alt="Course Image"
@@ -34,7 +35,7 @@
                     {{course.course_description}}
                 </p>
                 <div class="flex flex-wrap gap-2">
-                    <p *ngFor="let major of course.course_major.split(', ')" class="text-[11px] font-medium text-[#6366f1] bg-[#6366f12e] px-[9px] py-[5px] rounded-full">{{major}}</p>
+                    <p *ngFor="let major of course.course_major.split(', ')" class="text-[11px] font-medium text-[#6366f1] bg-[#6366f12e] px-[9px] py-[5px] rounded-full">{{major.split("-").join(" ")}}</p>
                     <!-- <p class="text-[11px] font-medium text-[#6366f1] bg-[#6366f12e] px-[9px] py-[5px] rounded-full">{{course.course_major}}</p> -->
                 </div>
                 <div class="absolute flex bottom-[11px] left-[18px] w-[90%] flex-wrap justify-center gap-2">

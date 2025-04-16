@@ -21,4 +21,9 @@ export class OverviewApiService {
   getCourseEnrollment(): Observable<any> {
     return this.http.get(`${this.apiUrl}/get_course_enrollment`);
   }
+
+  getMajors(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/get_majors`);
+  }
+  
 }

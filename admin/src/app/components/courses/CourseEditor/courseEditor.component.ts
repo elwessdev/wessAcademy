@@ -11,6 +11,7 @@ import { CoursesApiService } from '../../../services/courses-api.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
+import { OverviewApiService } from '../../../services/overview-api.service';
 
 @Component({
     selector: 'app-courseEditor',
@@ -50,18 +51,23 @@ export class CourseEditor {
     constructor(
         private router: Router, 
         private CoursesAPI: CoursesApiService, 
-        private messageService: MessageService
+        private messageService: MessageService,
+        private overviewAPI: OverviewApiService
     ){}
 
     ngOnInit() {
-        this.majors= [
-            {name: "Computer Science", code: "Computer Science"},
-            {name: "Information Technology", code: "Information Technology"},
-            {name: "Software Engineering", code: "Software Engineering"},
-            {name: "Data Science", code: "Data Science"},
-            {name: "Cyber Security", code: "Cyber Security"},
-            {name: "Artificial Intelligence", code: "Artificial Intelligence"},
-        ]
+        this.overviewAPI.getMajors().subscribe({
+            next: (data) => {
+                // console.log('get majors data', data);
+                this.majors = data.map((major: any) => ({
+                    name: major.major_name.split("-").join(" "),
+                    code: major.major_name
+                }));
+            },
+            error: (err) => {
+                console.error('get majors error', err);
+            }
+        });
     }
 
     addSection() {
@@ -75,10 +81,14 @@ export class CourseEditor {
     }
 
     removeSection(index: number) {
+        if (this.sections.length <= 1) {
+            return;
+        }
         this.sections.splice(index, 1);
-        this.sections.forEach((section:any, i:any) => {
+        this.sections.forEach((section: any, i: number) => {
             section.number = i + 1;
         });
+        console.log('remove section', index);
     }
 
     saveCourse(){
@@ -100,7 +110,7 @@ export class CourseEditor {
         }
         let majorsList = "";
         this.selectedMajor.forEach((major:any) => {
-            majorsList += major.name + ", ";
+            majorsList += major.code + ", ";
         });
         this.newCourseData = {
             title: this.title,
@@ -112,9 +122,11 @@ export class CourseEditor {
         console.log(this.newCourseData);
         this.CoursesAPI.addCourse(this.newCourseData).subscribe({
             next: (data) => {
-                console.log('add course data', data);
-                // this.router.navigate(['/courses']);
+                // console.log('add course data', data);
                 this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Course added successfully' });
+                setTimeout(() => {
+                    this.router.navigate(['/courses']);
+                }, 1300);
             }
             , error: (err) => {
                 console.error('add course error', err);
@@ -122,5 +134,9 @@ export class CourseEditor {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something wrong, try again' });
             }
         });
+    }
+
+    cancelEditor(){
+        this.router.navigate(['/courses']);
     }
 }

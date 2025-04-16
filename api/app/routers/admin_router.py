@@ -19,6 +19,11 @@ async def getMajorStatistics():
 async def getCourseEnrollment():
     return await admin_controller.getCourseEnrollment()
 
+# Majors
+@router.get("/get_majors")
+async def getMajors():
+    return await admin_controller.getMajors()
+
 ###### Course Page ######
 # Get All Courses
 @router.get("/get_all_courses")
@@ -46,3 +51,8 @@ async def getUsers():
 @router.put("/block_user/{user_id}")
 async def blockUser(user_id: int):
     return await admin_controller.blockUser(user_id)
+
+# Unblock User
+@router.put("/unblock_user/{user_id}")
+async def unblockUser(user_id: int):
+    return await admin_controller.unblockUser(user_id)

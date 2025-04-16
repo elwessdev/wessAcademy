@@ -47,7 +47,7 @@ export class OverviewComponent {
 
         this.overviewAPI.getTotal().subscribe({
             next: (data) => {
-                console.log("get total data", data)
+                // console.log("get total data", data)
                 this.summaryStats[0].value = data.users
                 this.summaryStats[1].value = data.courses
                 // this.summaryStats[2].value = data.total_major
@@ -57,7 +57,7 @@ export class OverviewComponent {
 
         this.overviewAPI.getMajorStatistics().subscribe({
             next: (data) => {
-                console.log("get major statistics data", data)
+                // console.log("get major statistics data", data)
                 this.MajorData = {
                     labels: [],
                     datasets: [
@@ -68,7 +68,7 @@ export class OverviewComponent {
                     ],
                 }
                 data.map((item: any) => {
-                    this.MajorData.labels.push(item.major)
+                    this.MajorData.labels.push(item.major.split("-").join(" "))
                     this.MajorData.datasets[0].data.push(item.count_1)
                 });
             },
@@ -77,7 +77,7 @@ export class OverviewComponent {
 
         this.overviewAPI.getCourseEnrollment().subscribe({
             next: (data) => {
-                console.log("get course enrollment data", data)
+                // console.log("get course enrollment data", data)
                 this.TrafficCoursesData = {
                     labels: [],
                     datasets: [
@@ -96,6 +96,14 @@ export class OverviewComponent {
                 });
             },
             error: (err) => console.error("get course enrollment error", err),
+        })
+
+        this.overviewAPI.getMajors().subscribe({
+            next: (data) => {
+                // console.log("get majors data", data)
+                this.summaryStats[2].value = data.length
+            },
+            error: (err) => console.error("get majors error", err),
         })
     }
 

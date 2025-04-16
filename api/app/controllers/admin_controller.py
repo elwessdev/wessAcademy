@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from app.db import database
 from app.models.user import users
-from app.models.course import course, userCourse, courseSections
+from app.models.course import course, userCourse, courseSections, majorsTable
 from sqlalchemy import select, func
 
 
@@ -56,6 +56,17 @@ async def getCourseEnrollment():
             raise HTTPException(status_code=404, detail="Could not fetch course enrollment")
         
         return course_enrollment
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Majors
+async def getMajors():
+    try:
+        query = select(majorsTable.c.major_name)
+        majors = await database.fetch_all(query)
+        if majors is None:
+            raise HTTPException(status_code=404, detail="Could not fetch majors")
+        return majors
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -124,7 +135,7 @@ async def addCourse(course_data: dict):
 # Get Users
 async def getUsers():
     try:
-        query = select(users.c.id, users.c.username, users.c.email, users.c.major, users.c.created_at)
+        query = select(users.c.id, users.c.username, users.c.email, users.c.major, users.c.created_at, users.c.blocked)
         allUsers = await database.fetch_all(query)
 
         if allUsers is None:
@@ -138,16 +149,21 @@ async def getUsers():
 async def blockUser(user_id: int):
     try:
         query = users.update().where(users.c.id == user_id).values(blocked=True)
-        result = await database.execute(query)
-
-        if result is None:
-            raise HTTPException(status_code=404, detail="Could not block user")
+        await database.execute(query)
         
         return {"message": "User blocked successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+# Unblock User
+async def unblockUser(user_id: int):
+    try:
+        query = users.update().where(users.c.id == user_id).values(blocked=False)
+        await database.execute(query)
+        
+        return {"message": "User unblocked successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 

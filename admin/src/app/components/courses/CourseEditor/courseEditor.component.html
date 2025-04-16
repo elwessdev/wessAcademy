@@ -21,7 +21,10 @@
     </div>
     <div class="sections mt-4">
         <div *ngFor="let section of sections">
-            <div class="section mx-auto flex h-fit w-[80%] flex-wrap bg-white p-[20px] border border-[#EEE] rounded-[5px] gap-2 mb-4">
+            <div class="section mx-auto flex h-fit w-[80%] flex-wrap bg-white p-[20px] border border-[#EEE] rounded-[5px] gap-2 mb-4 relative">
+                <button *ngIf="sections.length >1" class="absolute top-[10px] right-[10px] cursor-pointer" type="button">
+                    <i class="pi pi-trash" (click)="removeSection(section.number)"></i>
+                </button>
                 <h2 class="font-medium text-[18px]">Section {{section.number}}</h2>
                 <input pInputText [(ngModel)]="section.title" type="text"  placeholder="Section title" class="w-[100%]" />
                 <textarea [(ngModel)]="section.description" pTextarea placeholder="Small description about section" class="w-[100%] resize-none" rows="3"></textarea>
@@ -30,7 +33,7 @@
         </div>
     </div>
     <div class="w-[80%] mx-auto mt-4 flex items-center justify-center">
-        <p-button label="Cancel" icon="pi pi-times" class="mr-2" />
+        <p-button label="Cancel" icon="pi pi-times" class="mr-2" (onClick)="cancelEditor()" />
         <p-button label="Save" icon="pi pi-check" (onClick)="saveCourse()" />
     </div>
     
