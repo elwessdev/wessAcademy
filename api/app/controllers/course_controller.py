@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from app.db import database
 from app.models.user import users
-from app.models.course import course, userCourse
+from app.models.course import course, userCourse, courseSections
 from sqlalchemy import select
 
 
@@ -13,7 +13,7 @@ async def getCourses(userID):
         raise HTTPException(status_code=404, detail="User not found")
     user_major = db_user["major"]
 
-    query = select(course).where(course.c.course_major == user_major)
+    query = select(course).where(course.c.course_major.like(f"%{user_major}%"))
     db_courses = await database.fetch_all(query)
 
     query = select(userCourse.join(course, userCourse.c.course_id == course.c.id)).where(userCourse.c.user_id == userID)
@@ -38,3 +38,17 @@ async def enrollCourse(courseID, userID):
     if not save:
         raise HTTPException(status_code=500, detail="Course enrollment failed")
     return {"message": "Course enrolled successfully"}
+
+# Get Course Details
+async def getCourseDetails(courseID):
+    query = select(course).where(course.c.id == courseID)
+    db_course = await database.fetch_one(query)
+    if not db_course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    
+    query = select(courseSections).where(courseSections.c.course_id == courseID)
+    db_sections = await database.fetch_all(query)
+    if not db_sections:
+        raise HTTPException(status_code=404, detail="Course sections not found")
+
+    return {"course":db_course, "sections":db_sections}

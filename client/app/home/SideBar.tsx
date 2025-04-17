@@ -25,7 +25,7 @@ const sideBar = () => {
     return (
         <div className="w-72 bg-white shadow-lg z-10">
             <div className="p-6 border-b border-gray-100 px-[15px] py-[9px]">
-                <div className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-400 text-transparent bg-clip-text">
+                <Link href={"/home"} className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-400 text-transparent bg-clip-text">
                     <Image
                         src="/logo3.png"
                         alt="wessAcademy logo"
@@ -33,7 +33,7 @@ const sideBar = () => {
                         height={69}
                         className="object-contain w-[145px]"
                     />
-                </div>
+                </Link>
             </div>
 
             <div className="flex flex-col items-center py-8">

@@ -41,7 +41,7 @@ export function Signin({onClose}: AuthModalProps) {
                 }),
             });
             const data = await res.json();
-            console.log(data,res);
+            // console.log(data,res);
             if(res.ok){
                 localStorage.setItem("token", data.token);
                 // console.log(data)

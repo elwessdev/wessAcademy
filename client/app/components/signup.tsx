@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Select } from "antd";
 import { glob } from "fs";
@@ -13,6 +13,24 @@ interface AuthModalProps {
 export function Signup({onClose}: AuthModalProps) {
     const getUserData = useAuthStore((state) => state.getUserData);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [majors, setMajors] = useState<any>([]);
+
+    useEffect(()=> {
+        const getMajors = async() => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/get_majors`);
+                const data = await res.json();
+                // console.log(data);
+                if(res.ok) {
+                    setMajors(data);
+                }
+            } catch (error) {
+                console.log("get majors error",error);
+            }
+        }
+        getMajors();
+    },[])
+
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -31,7 +49,7 @@ export function Signup({onClose}: AuthModalProps) {
 
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
+        // console.log(formData);
         let errors = {
             username: formData.username ? "" : "Username is required",
             email: formData.email ? "" : "Email is required",
@@ -45,10 +63,11 @@ export function Signup({onClose}: AuthModalProps) {
             global: "",
         };
         setFormErrors(errors);
-        console.log(errors);
+        // console.log(errors);
         if(errors.username || errors.email || errors.major || errors.password || errors.confirmPassword) {
             return;
         }
+        console.log("after validation");
         try{
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
                 method: "POST",
@@ -165,7 +184,11 @@ export function Signup({onClose}: AuthModalProps) {
                                 onChange={(e) => setFormData({ ...formData, major: e.target.value })}
                                 >
                                     <option value="" hidden>Select your major</option>
-                                    <option value="computer-science">Computer Science</option>
+                                    {majors.map((major:any,idx:number) => (
+                                        <option key={idx} value={major.major_name}>
+                                            {major.major_name.split("-").join(" ")}
+                                        </option>
+                                    ))}
                             </select>
                             {formErrors.major && (
                                 <p className="text-red-500 text-sm mt-1">{formErrors.major}</p>

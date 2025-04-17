@@ -28,12 +28,12 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                             >
                                 My Courses
                             </Link>
-                            <Link
+                            {/* <Link
                                 href="#"
                                 className="text-gray-600 hover:text-indigo-600 transition-colors"
                             >
                                 Notes
-                            </Link>
+                            </Link> */}
                         </div>
                         <div className="relative">
                             <input

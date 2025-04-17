@@ -104,4 +104,12 @@ export class CoursesComponent {
     }
   }
 
+  handleSearch(e:any) {
+    if(e.target.value === ''){
+      this.filteredCourses = this.courses;
+      return;
+    }
+    this.filteredCourses = this.courses.filter((course) => course.course_name.toLowerCase().includes(e.target.value.toLowerCase()));
+  }
+
 }

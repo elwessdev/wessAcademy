@@ -110,17 +110,7 @@ export class OverviewComponent {
     initChartOptions() {
         this.chartOptions = {
             plugins: {
-                legend: {
-                position: "top",
-                align: "end",
-                labels: {
-                    usePointStyle: true,
-                    padding: 20,
-                    font: {
-                    size: 12,
-                    },
-                },
-                },
+                legend:  null
             },
             scales: {
                 x: {

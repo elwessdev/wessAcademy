@@ -4,6 +4,7 @@ import useAuthStore from '../store/authStore'
 import { useQuery, useQueryClient } from 'react-query';
 import Image from 'next/image';
 import { message } from 'antd';
+import Link from 'next/link';
 
 const Courses = () => {
     const queryClient = useQueryClient();
@@ -20,6 +21,8 @@ const Courses = () => {
             .then(res => res.json()),
         enabled: !!userData
     })
+
+    console.log(courses);
 
     const handleEnrollCourse = async(courseID:number) => {
         try {
@@ -58,7 +61,7 @@ const Courses = () => {
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
                 {courses?.myCourses && courses?.myCourses?.map((course: any, idx: number) => (
                     <div 
-                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]"
+                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-auto w-[360px]"
                         key={idx}
                     >
                         <Image
@@ -68,24 +71,24 @@ const Courses = () => {
                             height={200}
                             className="w-full h-[200px] object-cover rounded-t-xl"
                         />
-                        <div className="p-5 min-h-[165px] relative">
+                        <div className="p-5 min-h-[165px] relative pb-[70px]">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">
                                 {course?.course_name}
                             </h3>
-                            <p className="text-gray-600 mb-4 text-sm">
+                            <p className="text-gray-600 text-sm">
                                 {course?.course_description}
                             </p>
-                            <div className="absolute bottom-[11px] left-[18px] w-[90%] flex-wrap">
+                            <div className="absolute bottom-[10px] left-[18px] w-[90%] flex-wrap">
                                 <div className='w-full flex justify-between items-center'>
                                     <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
                                         {course?.status}
                                     </span>
-                                    <button className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center">
+                                    <Link href={`/home/course-${course?.course_name.split(" ").join("-").toLowerCase()}-${course?.course_id}`} className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center cursor-pointer">
                                         {
                                             course?.status === 'completed' ? 'View' : 'Continue'
                                         }
                                         <ChevronRight size={16} className="ml-1" />
-                                    </button>
+                                    </Link>
                                 </div>
                                 <div className="flex items-center mt-[8px]">
                                     <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
@@ -99,7 +102,7 @@ const Courses = () => {
                 ))}
                 {courses?.courses && courses?.courses?.map((course: any, idx: number) => (
                     <div 
-                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-fit w-[360px]"
+                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto w-[360px] h-auto"
                         key={idx}
                     >
                         <Image
@@ -109,11 +112,11 @@ const Courses = () => {
                             height={200}
                             className="w-full h-[200px] object-cover rounded-t-xl"
                         />
-                        <div className="p-5 min-h-[165px] relative">
+                        <div className="p-5 min-h-[165px] relative pb-[60px]">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">
                                 {course?.course_name}
                             </h3>
-                            <p className="text-gray-600 mb-4 text-sm">
+                            <p className="text-gray-600 text-sm">
                                 {course?.course_description}
                             </p>
                             <div className="flex justify-center items-center absolute bottom-[10px] left-[18px] w-[90%]">

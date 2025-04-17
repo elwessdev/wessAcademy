@@ -11,7 +11,7 @@
         <div class="flex flex-wrap gap-4">
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Search..." />
+                <input type="text" pInputText placeholder="Search..." (input)="handleSearch($event)" />
             </p-iconfield>
             <p-select [options]="majors" [(ngModel)]="selectedMajor" (ngModelChange)="selectMajor()" optionLabel="name" placeholder="Select Major" class="w-full md:w-56" />
         </div>

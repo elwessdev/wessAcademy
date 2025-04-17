@@ -15,3 +15,8 @@ async def get_courses(userID=Depends(auth_required)):
 @router.post("/enrollCourse")
 async def enroll_course(courseID: int, userID=Depends(auth_required)):
     return await course_controller.enrollCourse(courseID, userID)
+
+# Get Course Details
+@router.get("/courseDetails")
+async def get_course_details(courseID: int, userID=Depends(auth_required)):
+    return await course_controller.getCourseDetails(courseID)
