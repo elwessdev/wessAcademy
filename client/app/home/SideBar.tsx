@@ -7,7 +7,7 @@ import useAuthStore from "../store/authStore";
 import { useQuery } from "react-query";
 
 const sideBar = () => {
-    const userData = useAuthStore((state) => state.userData);
+    const userData:any = useAuthStore((state) => state.userData);
     const logout = useAuthStore((state) => state.logout);
 
         const {data:courses, isLoading, error} = useQuery({
@@ -47,11 +47,14 @@ const sideBar = () => {
                 <div className="text-gray-800 font-medium text-lg mb-1">{userData?.username}</div>
                 <div className="text-gray-500 text-sm mb-6 capitalize">{userData?.major?.replace(/-/g, " ")}</div>
 
-                <button className="w-48 py-2.5 px-4 mb-3 text-gray-700 bg-[#f0f1f27a] hover:bg-gray-100 rounded-lg flex items-center transition-all outline-none">
+                <Link
+                    href="/home/settings" 
+                    className="w-48 py-2.5 px-4 mb-3 text-gray-700 bg-[#f0f1f27a] hover:bg-gray-100 rounded-lg flex items-center transition-all outline-none"
+                >
                     <Settings size={18} className="mr-3 text-indigo-500" />
                     <span>Settings</span>
                     <ChevronRight size={16} className="ml-auto text-gray-400" />
-                </button>
+                </Link>
 
                 <button className="w-48 py-2.5 px-4 text-gray-700 bg-[#f0f1f27a] hover:bg-gray-100 rounded-lg flex items-center transition-all outline-none" onClick={logout}>
                     <LogOut size={18} className="mr-3 text-indigo-500" />

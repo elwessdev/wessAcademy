@@ -25,3 +25,14 @@ async def get_user_data(authorization: str = Header(...)):
     if not userValid:
         raise HTTPException(status_code=401, detail="Invalid token")
     return await auth_controller.getUserData(userValid)
+
+# Update User Data
+@router.put("/updateUser")
+async def update_user_data(updatedUser: dict, authorization: str = Header(...)):
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid token")
+    token = authorization.split("Bearer ")[1]
+    userValid = await verify_and_get_user(token)
+    if not userValid:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return await auth_controller.updateUserData(userValid, updatedUser)

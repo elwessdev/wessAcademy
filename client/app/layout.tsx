@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import ClientLayout from "./ClientLayout"
+import '@ant-design/v5-patch-for-react-19';
 import QueryClientProvider from "./hooks/QueryClientProvider"
 
 const inter = Inter({ subsets: ["latin"] })

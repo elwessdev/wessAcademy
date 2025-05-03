@@ -86,14 +86,17 @@ async def getAllCourses():
 # Delete Course
 async def deleteCourse(course_id: int):
     try:
+        query = userCourse.delete().where(userCourse.c.course_id == course_id)
+        await database.execute(query)
+        
         query = courseSections.delete().where(courseSections.c.course_id == course_id)
-        result = await database.execute(query)
+        await database.execute(query)
 
         # if result is None:
         #     raise HTTPException(status_code=404, detail="Could not delete course sections")
 
         query = course.delete().where(course.c.id == course_id)
-        result = await database.execute(query)
+        await database.execute(query)
 
         # print(result)
         

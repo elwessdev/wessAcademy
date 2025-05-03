@@ -1,15 +1,15 @@
 "use client";
 import { usePathname } from 'next/navigation';
 import Courses from "./Courses";
+import Settings from './settings/page';
 
 export default function Home() {
     const pathname = usePathname();
     return (
         <div className="">
             {pathname === '/home' && <Courses />}
-            {/* {pathname === '/home/settings' && <Settings />}
-            {pathname === '/home/courseContent' && <CourseContent />} */}
-            {/* Default to Courses if no other path matches */}
+            {pathname === '/settings' && <Settings />}
+            {/* {pathname === '/home/courseContent' && <CourseContent />} */}
         </div>
     );
 }

@@ -74,3 +74,51 @@ async def getUserData(userID):
         "major": db_user["major"],
         "created_at": db_user["created_at"]
     }
+
+# Update User Data
+async def updateUserData(userID, updatedUser):
+    query = select(users).where(users.c.id == userID)
+    db_user = await database.fetch_one(query)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check Password
+    if updatedUser.get("password") or not verify_password(updatedUser["currentPassword"], db_user["password"]):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+    
+    # Check Unique email
+    if updatedUser.get("email"):
+        query = select(users).where(users.c.email == updatedUser["email"])
+        existing_user = await database.fetch_one(query)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+    # Check Unique username
+    if updatedUser.get("username"):
+        query = select(users).where(users.c.username == updatedUser["username"])
+        existing_username = await database.fetch_one(query)
+        if existing_username:
+            raise HTTPException(status_code=400, detail="Username already taken")
+    
+    # Update user
+    update_data = {}
+    if updatedUser.get("username"):
+        update_data["username"] = updatedUser["username"]
+    if updatedUser.get("email"):
+        update_data["email"] = updatedUser["email"]
+    if updatedUser.get("newPassword"):
+        update_data["password"] = hash_password(updatedUser["newPassword"])
+    
+    query = users.update().where(users.c.id == userID).values(update_data)
+    update = await database.execute(query)
+
+    # get updated user
+    query = select(users).where(users.c.id == userID)
+    db_user = await database.fetch_one(query)
+    return {
+        "id": db_user["id"],
+        "username": db_user["username"],
+        "email": db_user["email"],
+        "major": db_user["major"],
+        "created_at": db_user["created_at"]
+    }

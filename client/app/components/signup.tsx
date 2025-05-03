@@ -11,7 +11,7 @@ interface AuthModalProps {
 }
 
 export function Signup({onClose}: AuthModalProps) {
-    const getUserData = useAuthStore((state) => state.getUserData);
+    const getUserData = useAuthStore((state:any) => state.getUserData);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [majors, setMajors] = useState<any>([]);
 

@@ -1,12 +1,13 @@
 import {create} from 'zustand';
 
-const useAuthStore = create((set,get) => ({
+
+const useAuthStore = create((set,get:any) => ({
     isAuth: false,
     userData: [],
 
-    setIsAuth: (isAuth) => set({isAuth: isAuth}),
+    setIsAuth: (isAuth:any) => set({isAuth: isAuth}),
     
-    setUserData: (userData) => set({userData: userData}),
+    setUserData: (userData:any) => set({userData: userData}),
 
     getUserData: async() => {
         if(!get().isAuth && localStorage.getItem('token')) {

@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 const Courses = () => {
     const queryClient = useQueryClient();
-    const userData = useAuthStore((state => state.userData));
+    const userData:any = useAuthStore((state => state.userData));
 
     const {data:courses, isLoading, error} = useQuery({
         queryKey: ['courses'],
