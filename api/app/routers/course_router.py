@@ -19,4 +19,11 @@ async def enroll_course(courseID: int, userID=Depends(auth_required)):
 # Get Course Details
 @router.get("/courseDetails")
 async def get_course_details(courseID: int, userID=Depends(auth_required)):
-    return await course_controller.getCourseDetails(courseID)
+    return await course_controller.getCourseDetails(courseID,userID)
+
+# Update Course Progress
+@router.put("/updateCourseProgress")
+async def update_course_progress(request: dict, userID=Depends(auth_required)):
+    courseID = request.get("courseID")
+    progress = request.get("progress")
+    return await course_controller.updateCourseProgress(courseID, progress, userID)

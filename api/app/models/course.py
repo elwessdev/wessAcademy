@@ -33,6 +33,7 @@ courseSections = Table(
     Column("section_title", String, nullable=False),
     Column("section_description", String, nullable=False),
     Column("section_content", String, nullable=False),
+    Column("video_link", String, nullable=True),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
 
@@ -41,5 +42,16 @@ majorsTable = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("major_name", String, nullable=False),
+    Column("created_at", DateTime, server_default=func.now(), nullable=False),
+)
+
+courseProgress = Table(
+    "course_progress",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("user_id", Integer, nullable=False),
+    Column("course_id", Integer, nullable=False),
+    Column("last_progress", Integer, nullable=False),
+    Column("total_sections", Integer, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
