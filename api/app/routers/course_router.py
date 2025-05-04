@@ -40,3 +40,8 @@ async def get_notes(courseID: int, userID=Depends(auth_required)):
 @router.delete("/deleteNote")
 async def delete_note(request: dict, userID=Depends(auth_required)):
     return await course_controller.deleteNote(request.get("noteID"),request.get("courseID"), userID)
+
+#  Ask AI
+@router.post("/askAI")
+async def ask_ai(request: dict, userID=Depends(auth_required)):
+    return await course_controller.askAI(request.get("courseID"), request.get("messages"))

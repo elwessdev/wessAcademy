@@ -3,6 +3,7 @@ from app.db import database
 from app.models.user import users
 from app.models.course import course, userCourse, courseSections, courseProgress, courseNotes
 from sqlalchemy import select, update
+import app.utils.groq as groq
 
 
 # Get Courses
@@ -106,6 +107,8 @@ async def deleteNote(noteID, courseID, userID):
     save = await database.execute(query)
     return {"message": "Note deleted successfully"}
 
-
+# Ask AI
+async def askAI(courseID, messages):
+    return groq.get_response(messages)
 
 

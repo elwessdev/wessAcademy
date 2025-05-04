@@ -9,6 +9,7 @@ import { message } from "antd"
 import { useQueryClient } from "react-query"
 import Notes from "./notes"
 import useAuthStore from "@/app/store/authStore"
+import AskAI from "./askAI"
 
 export default function CourseContent() {
     const queryClient = useQueryClient();
@@ -21,6 +22,7 @@ export default function CourseContent() {
     const [cur, setCur] = useState(0)
     const [doneQuiz, setDoneQuiz] = useState(false);
     const [notesOpen, setNotesOpen] = useState(false);
+    const [askAIOpen, setAskAIOpen] = useState(false);
 
     useLayoutEffect(()=>{
         if(!name){
@@ -136,6 +138,7 @@ export default function CourseContent() {
                     </button>
                     <button 
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
+                        onClick={() => setAskAIOpen(true)}
                     >
                         <BotMessageSquare size={18} />
                         <span className="font-[18px]">Ask AI</span>
@@ -164,7 +167,7 @@ export default function CourseContent() {
                     {
                         cur === sections.length - 2 && (
                             <button 
-                                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md shadow-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
+                                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md shadow-sm hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
                                 onClick={handleStartTest}
                             >
                                 <ShieldCheck size={18} />
@@ -175,7 +178,7 @@ export default function CourseContent() {
                     {
                         cur === sections.length - 1 && (
                             <button 
-                                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md shadow-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
+                                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md shadow-sm hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
                                 onClick={handleStartTest}
                                 disabled={!doneQuiz}
                             >
@@ -251,6 +254,11 @@ export default function CourseContent() {
             <Notes
                 notesOpen={notesOpen}
                 setNotesOpen={setNotesOpen}
+                courseID={course?.id}
+            />
+            <AskAI
+                askAIOpen={askAIOpen}
+                setAskAIOpen={setAskAIOpen}
                 courseID={course?.id}
             />
         </div>
