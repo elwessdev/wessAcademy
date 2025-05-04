@@ -21,7 +21,8 @@ const Notes = ({notesOpen,setNotesOpen,courseID}:props) => {
                 }
             });
             if(!res.ok){
-                throw new Error("Failed to fetch notes");
+                console.log("Error fetching notes");
+                // throw new Error("Error fetching notes");
             }
             return res.json();
         },

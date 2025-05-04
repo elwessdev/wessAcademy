@@ -56,7 +56,7 @@ function AskAI({askAIOpen, setAskAIOpen, courseID}:Props) {
             }}
         >
             <div className="flex flex-col">
-                <div className="flex-1 overflow-y-auto mt-[20px] pb-2 space-y-4 bg-gray-50 rounded min-h-[calc(100vh-200px)] max-h-[calc(100vh-200px)]">
+                <div className="flex-1 overflow-y-auto pr-4 mt-[20px] pb-2 space-y-4 bg-gray-50 rounded min-h-[calc(100vh-200px)] max-h-[calc(100vh-200px)]">
                     {
                         messages?.map((msg:any, index:number) => {
                             if (msg.role != "system"){
