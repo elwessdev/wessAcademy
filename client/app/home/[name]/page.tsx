@@ -1,27 +1,26 @@
 "use client"
-
-import type React from "react"
-
-import { useEffect, useLayoutEffect, useState } from "react"
-import Image from "next/image"
-import { ChevronDown, ChevronUp, Check, ChevronLeft, ChevronRight, NotebookPen, BotMessageSquare, ShieldCheck, UserRoundCheck, ClipboardCheck, BookCopy } from "lucide-react"
+import { useLayoutEffect, useState } from "react"
+import { Check, ChevronLeft, ChevronRight, NotebookPen, BotMessageSquare, ShieldCheck, ClipboardCheck, BookCopy } from "lucide-react"
 import { useParams } from "next/navigation"
 import "./style.scss"
 import Link from "next/link"
 import YouTubeEmbed from "@/app/components/YouTubeEmbed"
-import { text } from "stream/consumers"
 import { message } from "antd"
 import { useQueryClient } from "react-query"
+import Notes from "./notes"
+import useAuthStore from "@/app/store/authStore"
 
 export default function CourseContent() {
     const queryClient = useQueryClient();
     const params = useParams();
     const name = params.name;
+
     const [completedSections, setCompletedSections] = useState<number[]>([])
     const [course, setCourse] = useState<any>(null)
     const [sections, setSections] = useState<any>([])
     const [cur, setCur] = useState(0)
     const [doneQuiz, setDoneQuiz] = useState(false);
+    const [notesOpen, setNotesOpen] = useState(false);
 
     useLayoutEffect(()=>{
         if(!name){
@@ -130,6 +129,7 @@ export default function CourseContent() {
                     </button>
                     <button 
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
+                        onClick={() => setNotesOpen(true)}
                     >
                         <NotebookPen size={18} />
                         <span className="font-[18px]">Notes</span>
@@ -248,6 +248,11 @@ export default function CourseContent() {
                     </div>
                 </div>
             </div>
+            <Notes
+                notesOpen={notesOpen}
+                setNotesOpen={setNotesOpen}
+                courseID={course?.id}
+            />
         </div>
     )
 }

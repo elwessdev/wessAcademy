@@ -55,3 +55,13 @@ courseProgress = Table(
     Column("total_sections", Integer, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
+
+courseNotes = Table(
+    "course_notes",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("user_id", Integer, nullable=False),
+    Column("course_id", Integer, nullable=False),
+    Column("note_content", String, nullable=False),
+    Column("created_at", DateTime, server_default=func.now(), nullable=False),
+)

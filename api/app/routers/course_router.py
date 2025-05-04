@@ -24,6 +24,19 @@ async def get_course_details(courseID: int, userID=Depends(auth_required)):
 # Update Course Progress
 @router.put("/updateCourseProgress")
 async def update_course_progress(request: dict, userID=Depends(auth_required)):
-    courseID = request.get("courseID")
-    progress = request.get("progress")
-    return await course_controller.updateCourseProgress(courseID, progress, userID)
+    return await course_controller.updateCourseProgress(request.get("courseID"), request.get("progress"), userID)
+
+# Add Note
+@router.post("/addNote")
+async def add_note(request: dict, userID=Depends(auth_required)):
+    return await course_controller.addNote(request.get("courseID"), request.get("note"), userID)
+
+# Get Notes
+@router.get("/getNotes")
+async def get_notes(courseID: int, userID=Depends(auth_required)):
+    return await course_controller.getNotes(courseID, userID)
+
+# Delete Note
+@router.delete("/deleteNote")
+async def delete_note(request: dict, userID=Depends(auth_required)):
+    return await course_controller.deleteNote(request.get("noteID"),request.get("courseID"), userID)

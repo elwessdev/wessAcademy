@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from app.db import database
 from app.models.user import users
-from app.models.course import course, userCourse, courseSections, courseProgress
+from app.models.course import course, userCourse, courseSections, courseProgress, courseNotes
 from sqlalchemy import select, update
 
 
@@ -80,3 +80,32 @@ async def updateCourseProgress(courseID, progress, userID):
     save = await database.execute(query)
     print(save)
     return {"message": "Course progress updated successfully"}
+
+# Add Note
+async def addNote(courseID, note, userID):
+    query = courseNotes.insert().values(
+        user_id=userID,
+        course_id=courseID,
+        note_content=note
+    )
+    save = await database.execute(query)
+    if not save:
+        raise HTTPException(status_code=500, detail="Note addition failed")
+    return {"message": "Note added successfully"}
+
+# Get Notes
+async def getNotes(courseID, userID):
+    query = select(courseNotes).where(courseNotes.c.course_id == courseID and courseNotes.c.user_id == userID)
+    db_notes = await database.fetch_all(query)
+    
+    return db_notes or []
+
+# Delete Note
+async def deleteNote(noteID, courseID, userID):
+    query = courseNotes.delete().where(courseNotes.c.id == noteID and courseNotes.c.course_id == courseID and courseNotes.c.user_id == userID)
+    save = await database.execute(query)
+    return {"message": "Note deleted successfully"}
+
+
+
+
