@@ -8,8 +8,9 @@ import YouTubeEmbed from "@/app/components/YouTubeEmbed"
 import { message } from "antd"
 import { useQueryClient } from "react-query"
 import Notes from "./notes"
-import useAuthStore from "@/app/store/authStore"
+// import useAuthStore from "@/app/store/authStore"
 import AskAI from "./askAI"
+import FinalTest from "./finalTest"
 
 export default function CourseContent() {
     const queryClient = useQueryClient();
@@ -20,9 +21,9 @@ export default function CourseContent() {
     const [course, setCourse] = useState<any>(null)
     const [sections, setSections] = useState<any>([])
     const [cur, setCur] = useState(0)
-    const [doneQuiz, setDoneQuiz] = useState(false);
     const [notesOpen, setNotesOpen] = useState(false);
     const [askAIOpen, setAskAIOpen] = useState(false);
+    const [doneQuiz, setDoneQuiz] = useState(false);
 
     useLayoutEffect(()=>{
         if(!name){
@@ -64,7 +65,7 @@ export default function CourseContent() {
             }
         }
         getCourse()
-    },[name, params])
+    },[params])
 
     const handleNextSection = async() => {
         if (cur > sections.length - 1) {
@@ -107,8 +108,8 @@ export default function CourseContent() {
     }
     const handleStartTest = () => {
         handleNextSection();
-        console.log("completedSections", completedSections);
-        console.log("Start Test");
+        // console.log("completedSections", completedSections);
+        // console.log("Start Test");
     }
 
     return (
@@ -235,32 +236,62 @@ export default function CourseContent() {
                     className="w-full" 
                 >
                     <h3 className="flex flex-wrap bg-white rounded-md shadow-md p-6 w-full h-fit mb-[20px]">
-                        <span className="text-[18px] font-semibold text-gray-700 w-full">
+                        <span className="text-[22px] font-semibold text-gray-700 w-full">
                             {sections[cur]?.section_number}.<> </>
                             {sections[cur]?.section_title}
                         </span>
-                        <span className="text-[15px] py-1 font-medium w-full text-[#6b7280]">
+                        <span className="text-[17px] py-1 font-medium w-full text-[#6b7280]">
                             {sections[cur]?.section_description}
                         </span>
                     </h3>
-                    <div className="rounded-md bg-white shadow-md p-6 w-full">
-                        {sections[cur]?.video_link && <YouTubeEmbed videoUrl={sections[cur]?.video_link} />}
-                        {
-                            <div dangerouslySetInnerHTML={{ __html: sections[cur]?.section_content }} />
+                    
+                        {cur == sections.length - 1 && course
+                            ? (
+                                <FinalTest
+                                    courseID={course?.id}
+                                    initialSystemMessage={`
+                                        Course Name: ${course?.course_name}
+                                        Course Description: ${course?.course_description}
+                                        Course Sections: ${sections.slice(0, sections.length-1).map((section:any, index:any) => `Section ${index + 1}: ${section.section_title}, Description: ${section.section_description}`).join(", ")}
+                                    `}
+                                />
+                            )
+                            : (
+                                <>
+                                    <div className="rounded-md bg-white shadow-md p-6 w-full">
+                                        {sections[cur]?.video_link && <YouTubeEmbed videoUrl={sections[cur]?.video_link} />}
+                                        <div dangerouslySetInnerHTML={{ __html: sections[cur]?.section_content }} />
+                                    </div>
+                                </>
+                            )
                         }
-                    </div>
                 </div>
             </div>
-            <Notes
-                notesOpen={notesOpen}
-                setNotesOpen={setNotesOpen}
-                courseID={course?.id}
-            />
-            <AskAI
-                askAIOpen={askAIOpen}
-                setAskAIOpen={setAskAIOpen}
-                courseID={course?.id}
-            />
+            {course && (
+                    <>
+                        <Notes
+                            notesOpen={notesOpen}
+                            setNotesOpen={setNotesOpen}
+                            courseID={course?.id}
+                        />
+                        <AskAI
+                            askAIOpen={askAIOpen}
+                            setAskAIOpen={setAskAIOpen}
+                            courseID={course?.id}
+                            courseName={course?.course_name}
+                            courseDescription={course?.course_description}
+                            courseSections={
+                                sections.map((section:any) => {
+                                    return {
+                                        title: section.section_title,
+                                        description: section.section_description,
+                                    }
+                                })
+                            }
+                        />
+                    </>
+                )
+            }
         </div>
     )
 }

@@ -4,6 +4,7 @@ from app.models.user import users
 from app.models.course import course, userCourse, courseSections, courseProgress, courseNotes
 from sqlalchemy import select, update
 import app.utils.groq as groq
+import app.utils.Quiz as Quiz
 
 
 # Get Courses
@@ -98,7 +99,7 @@ async def addNote(courseID, note, userID):
 async def getNotes(courseID, userID):
     query = select(courseNotes).where(courseNotes.c.course_id == courseID and courseNotes.c.user_id == userID)
     db_notes = await database.fetch_all(query)
-    
+    print(db_notes)
     return db_notes or []
 
 # Delete Note
@@ -111,4 +112,60 @@ async def deleteNote(noteID, courseID, userID):
 async def askAI(courseID, messages):
     return groq.get_response(messages)
 
+# Generate Final Test
+async def generateFinalTest(initialSystemMessage):
+    messages = [
+        {
+            "role": "system",
+            "content": initialSystemMessage
+        },
+        {
+            "role": "user",
+            "content": """
+                Generate a final quiz for the course with 10 questions. Each question must have a "question" field and an "options" array. Each option must include the "text" of the option and a boolean "is_correct" flag to indicate whether it is correct.
+
+                Return the result as a valid and complete JSON array of question objects, ensuring no missing fields or syntax errors. Do not include any explanation or additional text — only return the JSON object.
+
+                Example format:
+                [
+                    {
+                        "question": "What is the capital of France?",
+                        "options": [
+                            { "text": "Paris", "is_correct": true },
+                            { "text": "Berlin", "is_correct": false },
+                            { "text": "Madrid", "is_correct": false }
+                        ]
+                    }
+                ]
+
+                Ensure that:
+                1. Return ONLY valid JSON without any explanations or additional text.
+                2. Each question must have a "question" field and an "options" array.
+                3. Each option must include "text" and "is_correct" fields.
+                4. The "is_correct" field must be a boolean (true/false).
+                5. Ensure proper JSON syntax:
+                    - All strings must have opening and closing quotes
+                    - All objects must have opening and closing braces
+                    - All arrays must have opening and closing brackets
+                    - No trailing commas
+                    - No missing commas between items
+                    - Property names must be in double quotes
+
+                Validate your JSON before returning it. DO NOT include any text outside the JSON array.
+
+                return ONLY the requested JSON format without any additional text, explanations, or commentary.
+
+                PLEASE before returning the JSON, validate it to ensure that:
+                - All strings have opening and closing quotes
+                - All objects have opening and closing braces
+                - All arrays have opening and closing brackets
+                - No trailing commas
+                - No missing commas between items
+                - Property names are in double quotes
+            """
+        }
+    ]
+    return groq.get_response(messages)
+    
+    # return Quiz.generate_quiz(initialSystemMessage)
 

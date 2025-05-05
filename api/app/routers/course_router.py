@@ -45,3 +45,8 @@ async def delete_note(request: dict, userID=Depends(auth_required)):
 @router.post("/askAI")
 async def ask_ai(request: dict, userID=Depends(auth_required)):
     return await course_controller.askAI(request.get("courseID"), request.get("messages"))
+
+# Generate Final Test
+@router.post("/generateFinalTest")
+async def generate_final_test(request: dict, userID=Depends(auth_required)):
+    return await course_controller.generateFinalTest(request.get("initialSystemMessage"))

@@ -27,6 +27,9 @@ const Notes = ({notesOpen,setNotesOpen,courseID}:props) => {
             return res.json();
         },
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchInterval: 0,
+        refetchIntervalInBackground: false,
     })
 
     const addNote = useCourseStore((state:any) => state.addNote);
@@ -81,7 +84,7 @@ const Notes = ({notesOpen,setNotesOpen,courseID}:props) => {
                 <div className="space-y-4">
                     {isLoading && <p className="text-gray-500">Loading notes...</p>}
                     {isError && <p className="text-red-500">Error loading notes.</p>}
-                    {notes?.map((note:any) => (
+                    {notes?.length > 0 && notes?.map((note:any) => (
                         <div key={note.id} className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors duration-200 hover:border-gray-300">
                             <p className="text-gray-700 mb-2">{note.note_content}</p>
                             <div className="flex justify-between items-center">

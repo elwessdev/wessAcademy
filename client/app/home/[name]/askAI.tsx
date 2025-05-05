@@ -7,16 +7,42 @@ type Props = {
     askAIOpen: boolean
     setAskAIOpen: (askAIOpen: boolean) => void
     courseID: number
+    courseName: string
+    courseDescription: string
+    courseSections: any[]
 }
 
-function AskAI({askAIOpen, setAskAIOpen, courseID}:Props) {
+function AskAI({askAIOpen, setAskAIOpen, courseID, courseName, courseDescription, courseSections}:Props) {
     const sendMsg = useAIStore((state:any) => state.sendMsg);
     const waitToReply = useAIStore((state:any) => state.waitToReply);
-    const messages = useAIStore((state:any) => state.messages);
+    // const messages = useAIStore((state:any) => state.messages);
     const [message, setMessage] = useState("");
 
+    const courseInfo = `
+        Course Name: ${courseName}
+        Course Description: ${courseDescription}
+        Course Sections: ${courseSections.map((section, index) => `Section ${index + 1}: ${section.title}, Section Description: ${section.description}`).join(", ")}
+    `;
+    const initialSystemMessage = `
+        This is wessAcademy, an online learning platform. You are a helpful assistant that helps students with their courses. 
+        You can answer questions about course content, provide explanations, and assist with any course-related inquiries. 
+        Please be concise and informative in your responses.
+        ${courseInfo}
+    `;
+    // console.log("Initial System Message: ", initialSystemMessage);
+    const [messages, setMessages] = useState<any[]>([
+        {
+            role: "system",
+            content: initialSystemMessage,
+        },
+        {
+            role: "assistant",
+            content: `Welcome to the course <b>${courseName}</b>. <br />Feel free to ask any questions about the course content, sections, or anything else you'd like to learn!`,
+        },
+    ]);
+
     useEffect(()=>{
-        if(messages.length > 3){
+        if(messages.length > 5){
             goToBottom();
         }
     },[messages])
@@ -24,8 +50,14 @@ function AskAI({askAIOpen, setAskAIOpen, courseID}:Props) {
     const handleSendMsg = async (e:any) => {
         e.preventDefault();
         if (message.trim() === "") return;
+        let newMessages = [...messages, { role: "user", content: message }];
+        setMessages(newMessages);
         setMessage("");
-        await sendMsg(message, courseID);
+        const response = await sendMsg(newMessages, courseID);
+        if (response) {
+            newMessages = [...newMessages, { role: "assistant", content: response }];
+            setMessages(newMessages);
+        }
         goToBottom();
     }
 
