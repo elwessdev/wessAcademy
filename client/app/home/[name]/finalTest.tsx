@@ -4,6 +4,7 @@ import { memo, useEffect, useLayoutEffect, useState } from 'react'
 import JSON5 from 'json5';
 import { useQuery } from 'react-query';
 import { Button } from 'antd';
+import { Check, X } from 'lucide-react';
 
 type Props = {
     courseID?: number
@@ -45,7 +46,18 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
     });
 
     const handleVerify = () => {
-        setResults(answers)
+        let res = [];
+        for(let i=0; i<quiz.length; i++){
+            const question = quiz[i];
+            const correctAnswer = question.options.find((option:any) => option.is_correct);
+            res[i] = {
+                text: answers[i]?.text,
+                isCorrect: answers[i]?.text === correctAnswer?.text,
+                correctAnswer: correctAnswer?.text,
+            }
+        }
+        // console.log(res);
+        setResults(res)
     }
 
     const handleReset = () => {
@@ -77,7 +89,7 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
                                     className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-full shadow-md transition duration-200 transform hover:scale-105 m-auto block"
                                     onClick={handleReset}
                                 >
-                                    Generate Test
+                                    {isLoading ? 'Loading...' : 'Generate Test'}
                                 </button>
                             </>
                         ) 
@@ -86,11 +98,12 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
                                 {quiz.map((question:any, index:number) => (
                                     <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden border border-indigo-100">
                                         <div className="bg-indigo-600 px-6 py-4">
-                                            <h3 className="text-[18px] font-semibold text-white">Question {index + 1}</h3>
+                                            {/* <h3 className="text-[18px] font-semibold text-white">Question {index + 1}</h3> */}
+                                            <h3 className="text-[16px] font-semibold text-white">{question.question}</h3>
                                         </div>
                                         
                                         <div className="p-6">
-                                            <p className="text-gray-800 font-medium mb-4">{question.question}</p>
+                                            {/* <p className="text-gray-800 font-medium mb-4">{question.question}</p> */}
                                             
                                             <div className="space-y-3">
                                                 {question.options.map((option:any, optIndex:number) => (
@@ -99,7 +112,11 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
                                                             type="radio" 
                                                             id={`q${index}-opt${optIndex}`}
                                                             name={`question-${index}`}
-                                                            className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                                                            className={`
+                                                                h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 accent-indigo-600
+                                                                ${results[index]?.correctAnswer == option?.text ? 'accent-green-600' : ''}
+                                                                ${(results[index]?.text == option.text && results[index]?.isCorrect==false) ? 'accent-red-600' : ''}
+                                                            `}
                                                             onChange={() => {
                                                                 const updatedAnswers = [...answers];
                                                                 updatedAnswers[index] = {
@@ -114,14 +131,24 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
                                                         <label 
                                                             htmlFor={`q${index}-opt${optIndex}`} 
                                                             className={`
-                                                                ml-3 block text-gray-700 cursor-pointer
+                                                                ml-3 text-gray-700 cursor-pointer flex gap-2
                                                                 ${
                                                                     results[index]?.text == option.text ? 
-                                                                    results[index]?.isCorrect ?'text-[green]' : 'text-[red]' :''
+                                                                        results[index]?.isCorrect ?'text-[green]' : 'text-[red]' 
+                                                                    :''
+                                                                }
+                                                                ${
+                                                                    results[index]?.correctAnswer == option?.text ?'text-[green]' : ''
                                                                 }
                                                             `}
                                                         >
                                                             {option?.text}
+                                                            {results[index]?.correctAnswer == option?.text && (
+                                                                <Check color='green' size={20} className='relative top-[1px]' />
+                                                            )}
+                                                            {(results[index]?.text == option.text && results[index]?.isCorrect==false) && (
+                                                                <X color='red' size={20} className='relative top-[1px]' />
+                                                            )}
                                                         </label>
                                                     </div>
                                                 ))}
