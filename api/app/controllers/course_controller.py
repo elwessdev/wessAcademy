@@ -19,20 +19,28 @@ async def getCourses(userID):
     query = select(course).where(course.c.course_major.like(f"%{user_major}%"))
     db_courses = await database.fetch_all(query)
 
+    # query = (
+    #     select(
+    #         course,
+    #         courseProgress.c.last_progress,
+    #         courseProgress.c.total_sections,
+    #         userCourse
+    #     )
+    #     .join(userCourse, userCourse.c.course_id == course.c.id)
+    #     .join(courseProgress, (courseProgress.c.course_id == course.c.id) & (courseProgress.c.user_id == userID))
+    #     .where(userCourse.c.user_id == userID)
+    #     .order_by(courseProgress.c.last_progress.desc())
+    # )
+    
     query = (
         select(
             course,
-            courseProgress.c.last_progress,
-            courseProgress.c.total_sections,
             userCourse
         )
         .join(userCourse, userCourse.c.course_id == course.c.id)
-        .join(courseProgress, (courseProgress.c.course_id == course.c.id) & (courseProgress.c.user_id == userID))
         .where(userCourse.c.user_id == userID)
-        .order_by(courseProgress.c.last_progress.desc())
+        .order_by(userCourse.c.progress.desc())
     )
-
-    # query = select(userCourse).join(course, userCourse.c.course_id == course.c.id).where(userCourse.c.user_id == userID)
     db_user_courses = await database.fetch_all(query)
 
     db_courses = [
@@ -61,15 +69,15 @@ async def enrollCourse(courseID, userID):
     if not save:
         raise HTTPException(status_code=500, detail="Course enrollment failed")
     
-    query = select(courseSections).where(courseSections.c.course_id == courseID)
-    db_sections = await database.fetch_all(query)
-    query = courseProgress.insert().values(
-        user_id=userID,
-        course_id=courseID,
-        last_progress=0,
-        total_sections=len(db_sections)+1
-    )
-    save = await database.execute(query)
+    # query = select(courseSections).where(courseSections.c.course_id == courseID)
+    # db_sections = await database.fetch_all(query)
+    # query = courseProgress.insert().values(
+    #     user_id=userID,
+    #     course_id=courseID,é'"(&-è_ç)"
+    #     last_progress=0,
+    #     total_sections=len(db_sections)+1
+    # )
+    # save = await database.execute(query)
     if not save:
         raise HTTPException(status_code=500, detail="Course progress initialization failed")
 
@@ -87,17 +95,28 @@ async def getCourseDetails(courseID, userID):
     if not db_sections:
         raise HTTPException(status_code=404, detail="Course sections not found")
     
-    query = select(courseProgress).where((courseProgress.c.course_id == courseID) & (courseProgress.c.user_id == userID))
-    db_progress = await database.fetch_one(query)
-    # if not db_progress:
-    #     raise HTTPException(status_code=404, detail="Course progress not found")
+    query = select(userCourse).where((userCourse.c.course_id == courseID) & (userCourse.c.user_id == userID))
+    db_courseUser = await database.fetch_one(query)
+    if not db_courseUser:
+        raise HTTPException(status_code=404, detail="Course progress not found")
 
-    return {"course":db_course, "sections":db_sections, "progress":db_progress}
+    return {
+        "course":db_course,
+        "sections":db_sections,
+        "progress":db_courseUser
+    }
 
 # Update Course Progress
 async def updateCourseProgress(courseID, progress, userID):
-    query = update(courseProgress).where((courseProgress.c.course_id == courseID) & (courseProgress.c.user_id == userID)).values(
-        last_progress=progress
+    # query = update(courseProgress).where((courseProgress.c.course_id == courseID) & (courseProgress.c.user_id == userID)).values(
+    #     last_progress=progress
+    # )
+    query = (
+        update(userCourse)
+        .where((userCourse.c.course_id == courseID) & (userCourse.c.user_id == userID))
+        .values(
+            progress=progress
+        )
     )
     save = await database.execute(query)
     print(save)

@@ -83,9 +83,9 @@ const sideBar = () => {
                                 <div className="text-sm font-medium text-gray-700">{course?.course_name}</div>
                                 <div className="flex items-center mt-1">
                                     <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-indigo-500 h-full rounded-full transition-all duration-200" style={{ width: `${Math.floor(course?.last_progress / course?.total_sections * 100)}%` }}></div>
+                                        <div className="bg-indigo-500 h-full rounded-full transition-all duration-200" style={{ width: `${Math.floor(course?.progress / course?.total_section * 100)}%` }}></div>
                                     </div>
-                                    <span className="text-xs text-gray-500 ml-2">{Math.floor(course?.last_progress / course?.total_sections * 100)}%</span>
+                                    <span className="text-xs text-gray-500 ml-2">{Math.floor(course?.progress / course?.total_section * 100)}%</span>
                                 </div>
                             </div>
                         </div>

@@ -51,13 +51,13 @@ export default function CourseContent() {
                 }]);
                 const newCompletedSections:any = [];
                 data.sections.forEach((section:any) => {
-                    if(section.section_number < data.progress.last_progress+1){
+                    if(section.section_number < data.progress.progress+1){
                         // console.log("section", section.id);
                         newCompletedSections.push(section.id);
                     }
                 });
                 setCompletedSections(newCompletedSections);
-                setCur(data.progress.last_progress);
+                setCur(data.progress.progress);
                 // console.log("cur", data.progress.last_progress);
                 // console.log("sections", newCompletedSections);
             } else {
