@@ -72,7 +72,7 @@ const sideBar = () => {
                 {isLoading && <div className="text-center text-gray-500">Loading...</div>}
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
                 {courses?.myCourses && courses?.myCourses?.map((course: any, idx: number) => (
-                    <div className="mb-4" key={idx}>
+                    <Link href={`/home/course-${course?.course_name.split(" ").join("-").toLowerCase()}-${course?.course_id}`} className="mb-4" key={idx}>
                         <div className="flex items-center mb-2">
                             <div className="w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
                                 <div className="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs">
@@ -89,7 +89,7 @@ const sideBar = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
                 {(!isLoading&&courses?.myCourses?.length > 0) 
                     ? <Link

@@ -21,6 +21,7 @@ userCourse = Table(
     Column("course_id", Integer, nullable=False),
     Column("progress", Integer, nullable=False),
     Column("status", String, nullable=False),
+    Column("total_section", Integer, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
 

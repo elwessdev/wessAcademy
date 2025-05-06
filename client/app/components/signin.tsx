@@ -174,7 +174,7 @@ export function Signin({onClose}: AuthModalProps) {
                                 className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors mt-6"
                             >
                                 {isSubmitting 
-                                    ? <span className="loading loading-spinner loading-md"></span>
+                                    ? <div className="animate-spin rounded-full h-[30px] w-[30px] border-b-2 border-white m-auto"></div>
                                     : "Sign in"
                                 }
                             </button>

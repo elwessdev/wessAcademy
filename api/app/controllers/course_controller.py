@@ -5,6 +5,7 @@ from app.models.course import course, userCourse, courseSections, courseProgress
 from sqlalchemy import select, update
 import app.utils.groq as groq
 import app.utils.Quiz as Quiz
+import json
 
 
 # Get Courses
@@ -18,23 +19,43 @@ async def getCourses(userID):
     query = select(course).where(course.c.course_major.like(f"%{user_major}%"))
     db_courses = await database.fetch_all(query)
 
-    query = select(userCourse.join(course, userCourse.c.course_id == course.c.id).join(courseProgress, userCourse.c.course_id == courseProgress.c.course_id)).where(userCourse.c.user_id == userID).order_by(courseProgress.c.last_progress.desc())
+    query = (
+        select(
+            course,
+            courseProgress.c.last_progress,
+            courseProgress.c.total_sections,
+            userCourse
+        )
+        .join(userCourse, userCourse.c.course_id == course.c.id)
+        .join(courseProgress, (courseProgress.c.course_id == course.c.id) & (courseProgress.c.user_id == userID))
+        .where(userCourse.c.user_id == userID)
+        .order_by(courseProgress.c.last_progress.desc())
+    )
+
+    # query = select(userCourse).join(course, userCourse.c.course_id == course.c.id).where(userCourse.c.user_id == userID)
     db_user_courses = await database.fetch_all(query)
 
     db_courses = [
         course for course in db_courses
         if course["id"] not in {user_course["course_id"] for user_course in db_user_courses}
     ]
-
     return {"courses":db_courses,"myCourses":db_user_courses}
+    # return {
+    #     "myCourses": db_user_courses,
+    # }
 
 # Enroll Course
 async def enrollCourse(courseID, userID):
+
+    query = select(courseSections).where(courseSections.c.course_id == courseID)
+    db_sections = await database.fetch_all(query)
+
     query = userCourse.insert().values(
         user_id=userID,
         course_id=courseID,
         progress=0,
-        status="In Progress"
+        status="In Progress",
+        total_section=len(db_sections)+1
     )
     save = await database.execute(query)
     if not save:
@@ -42,7 +63,6 @@ async def enrollCourse(courseID, userID):
     
     query = select(courseSections).where(courseSections.c.course_id == courseID)
     db_sections = await database.fetch_all(query)
-    
     query = courseProgress.insert().values(
         user_id=userID,
         course_id=courseID,
@@ -67,7 +87,7 @@ async def getCourseDetails(courseID, userID):
     if not db_sections:
         raise HTTPException(status_code=404, detail="Course sections not found")
     
-    query = select(courseProgress).where(courseProgress.c.course_id == courseID and courseProgress.c.user_id == userID)
+    query = select(courseProgress).where((courseProgress.c.course_id == courseID) & (courseProgress.c.user_id == userID))
     db_progress = await database.fetch_one(query)
     # if not db_progress:
     #     raise HTTPException(status_code=404, detail="Course progress not found")
@@ -76,7 +96,7 @@ async def getCourseDetails(courseID, userID):
 
 # Update Course Progress
 async def updateCourseProgress(courseID, progress, userID):
-    query = update(courseProgress).where(courseProgress.c.course_id == courseID and courseProgress.c.user_id == userID).values(
+    query = update(courseProgress).where((courseProgress.c.course_id == courseID) & (courseProgress.c.user_id == userID)).values(
         last_progress=progress
     )
     save = await database.execute(query)
@@ -97,14 +117,14 @@ async def addNote(courseID, note, userID):
 
 # Get Notes
 async def getNotes(courseID, userID):
-    query = select(courseNotes).where(courseNotes.c.course_id == courseID and courseNotes.c.user_id == userID)
+    query = select(courseNotes).where((courseNotes.c.course_id == courseID) & (courseNotes.c.user_id == userID))
     db_notes = await database.fetch_all(query)
     print(db_notes)
     return db_notes or []
 
 # Delete Note
 async def deleteNote(noteID, courseID, userID):
-    query = courseNotes.delete().where(courseNotes.c.id == noteID and courseNotes.c.course_id == courseID and courseNotes.c.user_id == userID)
+    query = courseNotes.delete().where((courseNotes.c.id == noteID) & (courseNotes.c.course_id == courseID) & (courseNotes.c.user_id == userID))
     save = await database.execute(query)
     return {"message": "Note deleted successfully"}
 

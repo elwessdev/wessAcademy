@@ -23,7 +23,7 @@ export default function CourseContent() {
     const [cur, setCur] = useState(0)
     const [notesOpen, setNotesOpen] = useState(false);
     const [askAIOpen, setAskAIOpen] = useState(false);
-    const [doneQuiz, setDoneQuiz] = useState(false);
+    const [doneQuiz, setDoneQuiz] = useState(true);
 
     useLayoutEffect(()=>{
         if(!name){
@@ -112,6 +112,10 @@ export default function CourseContent() {
         // console.log("Start Test");
     }
 
+    const handleFinishCourse = () => {
+        console.log("Finish Course");
+    }
+
     return (
         <div className="flex gap-x-6 p-6 flex-wrap max-h-[calc(100vh-74px)] overflow-auto items-start">
             <div className="flex w-[100%] mb-[30px] h-fit">
@@ -180,7 +184,7 @@ export default function CourseContent() {
                         cur === sections.length - 1 && (
                             <button 
                                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md shadow-sm hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
-                                onClick={handleStartTest}
+                                onClick={handleFinishCourse}
                                 disabled={!doneQuiz}
                             >
                                 <ClipboardCheck size={18} />
@@ -236,35 +240,36 @@ export default function CourseContent() {
                     className="w-full" 
                 >
                     <h3 className="flex flex-wrap bg-white rounded-md shadow-md p-6 w-full h-fit mb-[20px]">
-                        <span className="text-[22px] font-semibold text-gray-700 w-full">
+                        <span className="text-[19px] font-semibold text-gray-700 w-full">
                             {sections[cur]?.section_number}.<> </>
                             {sections[cur]?.section_title}
                         </span>
-                        <span className="text-[17px] py-1 font-medium w-full text-[#6b7280]">
+                        <span className="text-[15px] py-1 font-medium w-full text-[#6b7280]">
                             {sections[cur]?.section_description}
                         </span>
                     </h3>
                     
-                        {cur == sections.length - 1 && course
-                            ? (
-                                <FinalTest
-                                    courseID={course?.id}
-                                    initialSystemMessage={`
-                                        Course Name: ${course?.course_name}
-                                        Course Description: ${course?.course_description}
-                                        Course Sections: ${sections.slice(0, sections.length-1).map((section:any, index:any) => `Section ${index + 1}: ${section.section_title}, Description: ${section.section_description}`).join(", ")}
-                                    `}
-                                />
-                            )
-                            : (
-                                <>
-                                    <div className="rounded-md bg-white shadow-md p-6 w-full">
-                                        {sections[cur]?.video_link && <YouTubeEmbed videoUrl={sections[cur]?.video_link} />}
-                                        <div dangerouslySetInnerHTML={{ __html: sections[cur]?.section_content }} />
-                                    </div>
-                                </>
-                            )
-                        }
+                    {cur == sections.length - 1 && course
+                        ? (
+                            <FinalTest
+                                courseID={course?.id}
+                                initialSystemMessage={`
+                                    Course Name: ${course?.course_name}
+                                    Course Description: ${course?.course_description}
+                                    Course Sections: ${sections.slice(0, sections.length-1).map((section:any, index:any) => `Section ${index + 1}: ${section.section_title}, Description: ${section.section_description}`).join(", ")}
+                                `}
+                                setDoneQuiz={setDoneQuiz}
+                            />
+                        )
+                        : (
+                            <>
+                                <div className="rounded-md bg-white shadow-md p-6 w-full">
+                                    {sections[cur]?.video_link && <YouTubeEmbed videoUrl={sections[cur]?.video_link} />}
+                                    <div dangerouslySetInnerHTML={{ __html: sections[cur]?.section_content }} />
+                                </div>
+                            </>
+                        )
+                    }
                 </div>
             </div>
             {course && (

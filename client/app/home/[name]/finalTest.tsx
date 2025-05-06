@@ -9,9 +9,10 @@ import { Check, X } from 'lucide-react';
 type Props = {
     courseID?: number
     initialSystemMessage: string
+    setDoneQuiz: any
 }
 
-function FinalTest({initialSystemMessage, courseID}: Props) {
+function FinalTest({initialSystemMessage, courseID, setDoneQuiz}: Props) {
     // const waitGenerateTest = useAIStore((state:any) => state.waitGenerateTest);
     const generateFinalTest = useAIStore((state:any) => state.generateFinalTest);
     const [answers, setAnswers] = useState<any>([]);
@@ -29,7 +30,7 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
     // },[initialSystemMessage]);
 
     const {data:quiz, isLoading, isError, refetch} = useQuery({
-        queryKey: ['quiz',courseID],
+        queryKey: ['quiz',[courseID, initialSystemMessage]],
         queryFn: async () => {
             const quizList = await generateFinalTest(initialSystemMessage);
             try {
@@ -58,6 +59,9 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
         }
         // console.log(res);
         setResults(res)
+        if(res.every((result:any) => result.isCorrect)){
+            setDoneQuiz(true);
+        }
     }
 
     const handleReset = () => {
@@ -66,9 +70,21 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
         refetch();
     }
 
+    if(isError) return (
+        <div className="flex justify-center items-center h-screen">
+            <p className="text-red-500">Error fetching quiz data.</p>
+        </div>
+    )
+
+    if(isLoading) return (
+        <div className="flex justify-center h-screen mt-[90px]">
+            <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-blue-500"></div>
+        </div>
+    )
+
     return (
         <div>
-            {isError &&(
+            {/* {isError &&(
                 <div className="flex justify-center items-center h-screen">
                     <p className="text-red-500">Error fetching quiz data.</p>
                 </div>
@@ -77,8 +93,8 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
                 <div className="flex justify-center h-screen mt-[90px]">
                     <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-blue-500"></div>
                 </div>
-            )}
-            {(!isLoading) && 
+            )} */}
+            {/* {(!isLoading) &&  */}
                 <div className="container mx-auto p-6 max-w-4xl">
                     {
                         quiz?.length === 0 
@@ -178,7 +194,7 @@ function FinalTest({initialSystemMessage, courseID}: Props) {
                         )
                     }
                 </div>
-            }
+            {/* } */}
         </div>
     )
 }

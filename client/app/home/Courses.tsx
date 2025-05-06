@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import Image from 'next/image';
 import { message } from 'antd';
 import Link from 'next/link';
+import axios from 'axios';
 
 const Courses = () => {
     const queryClient = useQueryClient();
@@ -12,17 +13,19 @@ const Courses = () => {
 
     const {data:courses, isLoading, error} = useQuery({
         queryKey: ['courses'],
-        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/coursesList`,{
+        queryFn: async()=>{
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/course/coursesList`,{
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            })
-            .then(res => res.json()),
+                }
+            });
+            return res.data;
+        },
         enabled: !!userData
     })
 
-    console.log(courses);
+    console.log("hneee",courses);
 
     const handleEnrollCourse = async(courseID:number) => {
         try {
@@ -36,6 +39,7 @@ const Courses = () => {
             const data = await res.json();
             if (res.ok) {
                 // message.success("Successfully enrolled in course!");
+                console.log(courses);
                 queryClient.invalidateQueries({ queryKey: ['courses'] });
                 queryClient.invalidateQueries({ queryKey: ['myCoursesSideBar'] });
             } else {

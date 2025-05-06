@@ -29,6 +29,7 @@ function AskAI({askAIOpen, setAskAIOpen, courseID, courseName, courseDescription
         Please be concise and informative in your responses.
         ${courseInfo}
     `;
+    // console.log(initialSystemMessage);
     // console.log("Initial System Message: ", initialSystemMessage);
     const [messages, setMessages] = useState<any[]>([
         {

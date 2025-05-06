@@ -241,7 +241,7 @@ export function Signup({onClose}: AuthModalProps) {
                             disabled={isSubmitting}
                         >
                             {isSubmitting 
-                                ? <span className="loading loading-spinner loading-md"></span>
+                                ? <div className="animate-spin rounded-full h-[30px] w-[30px] border-b-2 border-white m-auto"></div>
                                 : "Sign up"
                             }
                         </button>
