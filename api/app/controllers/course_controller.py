@@ -208,3 +208,11 @@ async def generateFinalTest(initialSystemMessage):
     
     # return Quiz.generate_quiz(initialSystemMessage)
 
+# Finish Course
+async def finishCourse(courseID, userID):
+    query = update(userCourse).where((userCourse.c.course_id == courseID) & (userCourse.c.user_id == userID)).values(
+        status="Completed",
+        progress=-1
+    )
+    await database.execute(query)
+    return {"message": "Course completed successfully"}

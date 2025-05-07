@@ -8,14 +8,16 @@ import YouTubeEmbed from "@/app/components/YouTubeEmbed"
 import { message } from "antd"
 import { useQueryClient } from "react-query"
 import Notes from "./notes"
-// import useAuthStore from "@/app/store/authStore"
 import AskAI from "./askAI"
 import FinalTest from "./finalTest"
+import { useCourseStore } from "@/app/store/courseStore"
 
 export default function CourseContent() {
     const queryClient = useQueryClient();
     const params = useParams();
     const name = params.name;
+
+    const finishCourse = useCourseStore((state:any) => state.finishCourse);
 
     const [completedSections, setCompletedSections] = useState<number[]>([])
     const [course, setCourse] = useState<any>(null)
@@ -23,7 +25,8 @@ export default function CourseContent() {
     const [cur, setCur] = useState(0)
     const [notesOpen, setNotesOpen] = useState(false);
     const [askAIOpen, setAskAIOpen] = useState(false);
-    const [doneQuiz, setDoneQuiz] = useState(true);
+    const [doneQuiz, setDoneQuiz] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     useLayoutEffect(()=>{
         if(!name){
@@ -41,6 +44,7 @@ export default function CourseContent() {
             const data = await res.json()
             if (res.ok) {
                 setCourse(data.course);
+                setProgress(data.progress.progress);
                 setSections([...data.sections, {
                     id: -1,
                     section_number: data.sections.length + 1,
@@ -50,14 +54,20 @@ export default function CourseContent() {
                     section_content: null,
                 }]);
                 const newCompletedSections:any = [];
-                data.sections.forEach((section:any) => {
-                    if(section.section_number < data.progress.progress+1){
-                        // console.log("section", section.id);
-                        newCompletedSections.push(section.id);
-                    }
-                });
+                if(data.progress.progress >= 0){
+                    data.sections.forEach((section:any) => {
+                        if(section.section_number < data.progress.progress+1){
+                            // console.log("section", section.id);
+                            newCompletedSections.push(section.id);
+                        }
+                        setCur(data.progress.progress);
+                    });
+                } else {
+                    data.sections.forEach((section:any) => newCompletedSections.push(section.id));
+                    newCompletedSections.push(-1);
+                    setCur(data.sections.length);
+                }
                 setCompletedSections(newCompletedSections);
-                setCur(data.progress.progress);
                 // console.log("cur", data.progress.last_progress);
                 // console.log("sections", newCompletedSections);
             } else {
@@ -113,7 +123,10 @@ export default function CourseContent() {
     }
 
     const handleFinishCourse = () => {
-        console.log("Finish Course");
+        if(progress== -1){
+            return;
+        }
+        finishCourse(course.id);
     }
 
     return (
@@ -170,7 +183,7 @@ export default function CourseContent() {
                             )
                     }
                     {
-                        cur === sections.length - 2 && (
+                        cur === sections.length - 2  && (
                             <button 
                                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md shadow-sm hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
                                 onClick={handleStartTest}
@@ -181,7 +194,7 @@ export default function CourseContent() {
                         )
                     }
                     {
-                        cur === sections.length - 1 && (
+                        (cur === sections.length - 1 && progress!=-1) && (
                             <button 
                                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md shadow-sm hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
                                 onClick={handleFinishCourse}

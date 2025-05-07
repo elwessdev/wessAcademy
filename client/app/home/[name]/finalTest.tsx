@@ -5,6 +5,7 @@ import JSON5 from 'json5';
 import { useQuery } from 'react-query';
 import { Button } from 'antd';
 import { Check, X } from 'lucide-react';
+import confetti from "canvas-confetti";
 
 type Props = {
     courseID?: number
@@ -29,7 +30,7 @@ function FinalTest({initialSystemMessage, courseID, setDoneQuiz}: Props) {
     //     fetchQuiz();
     // },[initialSystemMessage]);
 
-    const {data:quiz, isLoading, isError, refetch} = useQuery({
+    const {data:quiz = [], isLoading, isRefetching, isError, refetch} = useQuery({
         queryKey: ['quiz',[courseID, initialSystemMessage]],
         queryFn: async () => {
             const quizList = await generateFinalTest(initialSystemMessage);
@@ -60,6 +61,11 @@ function FinalTest({initialSystemMessage, courseID, setDoneQuiz}: Props) {
         // console.log(res);
         setResults(res)
         if(res.every((result:any) => result.isCorrect)){
+            confetti({
+                particleCount: 500,
+                spread: 150,
+                origin: { y: 0.6 },
+            });
             setDoneQuiz(true);
         }
     }
@@ -82,18 +88,27 @@ function FinalTest({initialSystemMessage, courseID, setDoneQuiz}: Props) {
         </div>
     )
 
+    if(isRefetching) return (
+        <div className="flex flex-wrap justify-center mt-[90px] h-[300px]">
+            <div>
+                <p className="text-center w-full text-gray-600 mb-6">Preparing your quiz questions, please wait...</p>
+                <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-blue-500 m-auto"></div>
+            </div>
+        </div>
+    )
+
     return (
         <div>
             {/* {isError &&(
                 <div className="flex justify-center items-center h-screen">
                     <p className="text-red-500">Error fetching quiz data.</p>
                 </div>
-            )}
+            )}*/}
             {isLoading &&(
                 <div className="flex justify-center h-screen mt-[90px]">
                     <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-blue-500"></div>
                 </div>
-            )} */}
+            )}
             {/* {(!isLoading) &&  */}
                 <div className="container mx-auto p-6 max-w-4xl">
                     {
@@ -105,7 +120,7 @@ function FinalTest({initialSystemMessage, courseID, setDoneQuiz}: Props) {
                                     className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-full shadow-md transition duration-200 transform hover:scale-105 m-auto block"
                                     onClick={handleReset}
                                 >
-                                    {isLoading ? 'Loading...' : 'Generate Test'}
+                                    {isLoading || isRefetching ? 'Loading...' : 'Try Again'}
                                 </button>
                             </>
                         ) 
@@ -185,6 +200,7 @@ function FinalTest({initialSystemMessage, courseID, setDoneQuiz}: Props) {
                                         <button
                                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-8 rounded-full shadow-md transition duration-200 transform hover:scale-105 ml-4"
                                             onClick={handleReset}
+                                            disabled={isLoading || isRefetching}
                                         >
                                             Test Again
                                         </button>

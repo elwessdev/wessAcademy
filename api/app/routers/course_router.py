@@ -50,3 +50,9 @@ async def ask_ai(request: dict, userID=Depends(auth_required)):
 @router.post("/generateFinalTest")
 async def generate_final_test(request: dict, userID=Depends(auth_required)):
     return await course_controller.generateFinalTest(request.get("initialSystemMessage"))
+
+# Finish Course
+@router.post("/finishCourse")
+async def finish_course(request: dict, userID=Depends(auth_required)):
+    courseID = request.get("courseID")
+    return await course_controller.finishCourse(courseID,userID)

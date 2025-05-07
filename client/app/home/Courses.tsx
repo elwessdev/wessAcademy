@@ -84,7 +84,14 @@ const Courses = () => {
                             </p>
                             <div className="absolute bottom-[10px] left-[18px] w-[90%] flex-wrap">
                                 <div className='w-full flex justify-between items-center'>
-                                    <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+                                    <span className={`
+                                            text-xs font-medium bg-amber-50 px-2 py-1 rounded-full
+                                            ${
+                                                course?.status === 'Completed'
+                                                ?'text-indigo-600 bg-indigo-100'
+                                                :'text-amber-600 bg-amber-100'
+                                            }
+                                        `}>
                                         {course?.status}
                                     </span>
                                     <Link href={`/home/course-${course?.course_name.split(" ").join("-").toLowerCase()}-${course?.course_id}`} className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center cursor-pointer">
@@ -96,9 +103,20 @@ const Courses = () => {
                                 </div>
                                 <div className="flex items-center mt-[8px]">
                                     <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-indigo-500 h-full rounded-full transition-all duration-200" style={{ width: `${Math.floor(course?.progress / course?.total_section * 100)}%` }}></div>
+                                        <div 
+                                            className="bg-indigo-500 h-full rounded-full transition-all duration-200" 
+                                            style={{ width: `
+                                                ${course?.progress == -1 ? 100 : Math.floor(course?.progress / course?.total_section * 100)}%
+                                            ` }}
+                                        ></div>
                                     </div>
-                                    <span className="text-xs text-gray-500 ml-2">{Math.floor(course?.progress / course?.total_section * 100)}%</span>
+                                    <span className="text-xs text-gray-500 ml-2">
+                                        {course?.progress == -1
+                                            ? "100"
+                                            : Math.floor(course?.progress / course?.total_section * 100)
+                                        }
+                                        %
+                                    </span>
                                 </div>
                             </div>
                         </div>

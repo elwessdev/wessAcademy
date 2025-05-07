@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { CirclePlus, Search } from "lucide-react";
 import Sidebar from "@/app/home/SideBar";
 
 
@@ -35,13 +35,21 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                                 Notes
                             </Link> */}
                         </div>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                className="bg-gray-50 border border-gray-200 rounded-full py-2 px-4 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                            />
-                            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                        <div className="flex items-center space-x-4">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    className="bg-gray-50 border border-gray-200 rounded-full py-2 px-4 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                />
+                                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                            </div>
+                            <button 
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
+                            >
+                                <CirclePlus size={18} />
+                                <span className="font-[18px]">Join Course</span>
+                            </button>
                         </div>
                     </div>
 
