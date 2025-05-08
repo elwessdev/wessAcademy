@@ -11,7 +11,7 @@ const Courses = () => {
     const queryClient = useQueryClient();
     const userData:any = useAuthStore((state => state.userData));
 
-    const {data:courses, isLoading, error} = useQuery({
+    const {data:courses, isLoading, isRefetching, error} = useQuery({
         queryKey: ['courses'],
         queryFn: async()=>{
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/course/coursesList`,{
@@ -22,10 +22,10 @@ const Courses = () => {
             });
             return res.data;
         },
-        enabled: !!userData
+        enabled: !!userData,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     })
-
-    console.log("hneee",courses);
 
     const handleEnrollCourse = async(courseID:number) => {
         try {
@@ -61,9 +61,19 @@ const Courses = () => {
             </div>
             {/* Content Grid */}
             <div className="flex flex-wrap p-8 gap-6">
-                {isLoading && <div className="text-center text-gray-500">Loading...</div>}
+                {isLoading || isRefetching &&(
+                    <div className="w-full flex justify-center items-center py-8">
+                        <div className="flex flex-col items-center gap-3">
+                            <div className="relative w-12 h-12">
+                                <div className="absolute top-0 left-0 w-full h-full border-4 border-indigo-200 rounded-full"></div>
+                                <div className="absolute top-0 left-0 w-full h-full border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+                            </div>
+                            <p className="text-indigo-600 font-medium">Loading courses...</p>
+                        </div>
+                    </div>
+                )}
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
-                {courses?.myCourses && courses?.myCourses?.map((course: any, idx: number) => (
+                {(courses?.myCourses && (!isRefetching && !isLoading)) && courses?.myCourses?.map((course: any, idx: number) => (
                     <div 
                         className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-auto w-[360px]"
                         key={idx}
@@ -122,7 +132,7 @@ const Courses = () => {
                         </div>
                     </div>
                 ))}
-                {courses?.courses && courses?.courses?.map((course: any, idx: number) => (
+                {(courses?.courses && (!isRefetching && !isLoading)) && courses?.courses?.map((course: any, idx: number) => (
                     <div 
                         className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto w-[360px] h-auto"
                         key={idx}

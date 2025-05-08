@@ -216,3 +216,69 @@ async def finishCourse(courseID, userID):
     )
     await database.execute(query)
     return {"message": "Course completed successfully"}
+
+# Get Course By Code
+async def getCourseByCode(courseCode):
+    query = select(course).where(course.c.course_code == courseCode)
+    db_course = await database.fetch_one(query)
+    if not db_course:
+        return {"success": False, "message": "Course not found"}
+    return {
+        "success": True,
+        "course": db_course
+    }
+
+# Join Course Per Code
+async def joinCoursePerCode(courseID, userID):
+    query = select(course).where(course.c.id == courseID)
+    db_course = await database.fetch_one(query)
+    if not db_course:
+        return {"success": False, "message": "Course not found"}
+    
+    query = select(userCourse).where((userCourse.c.course_id == courseID) & (userCourse.c.user_id == userID))
+    db_user_course = await database.fetch_one(query)
+    if db_user_course:
+        return {"success": False, "message": "Already enrolled in this course"}
+    
+    query = select(courseSections).where(courseSections.c.course_id == courseID)
+    db_sections = await database.fetch_all(query)
+    
+    query = userCourse.insert().values(
+        user_id=userID,
+        course_id=courseID,
+        progress=0,
+        status="In Progress",
+        total_section=len(db_sections)+1
+    )
+    save = await database.execute(query)
+
+    if not save:
+        raise HTTPException(status_code=500, detail="Course enrollment failed")
+    
+    return {"success": True, "message": "Course joined successfully"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

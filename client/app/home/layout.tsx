@@ -1,9 +1,13 @@
+"use client";
+import React from "react";
 import Link from "next/link";
 import { CirclePlus, Search } from "lucide-react";
 import Sidebar from "@/app/home/SideBar";
+import JoinCourseCode from "../components/joinCourseCode";
 
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
+    const [openJoinCourse, setOpenJoinCourse] = React.useState(false);
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="flex min-h-screen">
@@ -46,6 +50,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                             </div>
                             <button 
                                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
+                                onClick={() => setOpenJoinCourse(true)}
                             >
                                 <CirclePlus size={18} />
                                 <span className="font-[18px]">Join Course</span>
@@ -59,6 +64,10 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
 
                 </div>
             </div>
+            <JoinCourseCode
+                openJoinCourse={openJoinCourse}
+                setOpenJoinCourse={setOpenJoinCourse}
+            />
         </div>
     );
 }

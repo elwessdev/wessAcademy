@@ -69,7 +69,14 @@ const sideBar = () => {
                     <BookOpen size={18} className="text-indigo-500 mr-2" />
                     <h3 className="text-gray-700 font-medium">My Courses</h3>
                 </div>
-                {isLoading && <div className="text-center text-gray-500">Loading...</div>}
+                {isLoading && (
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="relative w-8 h-8">
+                            <div className="absolute top-0 left-0 w-full h-full border-4 border-indigo-200 rounded-full"></div>
+                            <div className="absolute top-0 left-0 w-full h-full border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+                        </div>
+                    </div>
+                )}
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
                 {courses?.myCourses && courses?.myCourses?.map((course: any, idx: number) => (
                     <Link href={`/home/course-${course?.course_name.split(" ").join("-").toLowerCase()}-${course?.course_id}`} className="mb-4" key={idx}>
@@ -107,7 +114,7 @@ const sideBar = () => {
                     >
                         View all courses <ChevronRight size={14} className="ml-1" />
                     </Link>
-                    : <div className="text-center text-gray-500 text-[15px]">No courses found</div>
+                    : <div className="text-center text-gray-500 text-[15px]"></div>
                 }
             </div>
 

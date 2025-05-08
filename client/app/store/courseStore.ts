@@ -51,5 +51,31 @@ export const useCourseStore = create((set,get)=>({
             message.error("Something went wrong, Try again later");
             console.error("Error finishing course:", error);
         }
+    },
+
+    searchCourseByCode: async(courseCode:string) => {
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/course/getCourseByCode`,{courseCode},{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
+            return res.data;
+        } catch (error) {
+            console.error("Error searching course by code:", error);
+        }
+    },
+
+    joinCourse: async(courseID:number) => {
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/course/joinCoursePerCode`,{courseID},{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
+            return res.data;
+        } catch (error) {
+            console.error("Error joining course:", error);
+        }
     }
 }));

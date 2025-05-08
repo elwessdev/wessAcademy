@@ -56,3 +56,13 @@ async def generate_final_test(request: dict, userID=Depends(auth_required)):
 async def finish_course(request: dict, userID=Depends(auth_required)):
     courseID = request.get("courseID")
     return await course_controller.finishCourse(courseID,userID)
+
+# Get Course By Code
+@router.post("/getCourseByCode")
+async def get_course_by_code(request: dict, userID=Depends(auth_required)):
+    return await course_controller.getCourseByCode(request.get("courseCode"))
+
+# Join Course Per Code
+@router.post("/joinCoursePerCode")
+async def join_course_per_code(request: dict, userID=Depends(auth_required)):
+    return await course_controller.joinCoursePerCode(request.get("courseID"), userID)

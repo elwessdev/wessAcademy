@@ -10,6 +10,7 @@ course = Table(
     Column("course_description", String, nullable=False),
     Column("course_image", String, nullable=False),
     Column("course_major", String, nullable=False),
+    Column("course_code", String, nullable=False),
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
 
