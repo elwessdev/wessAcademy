@@ -1,5 +1,5 @@
 "use client"
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Copy } from 'lucide-react'
 import useAuthStore from '../store/authStore'
 import { useQuery, useQueryClient } from 'react-query';
 import Image from 'next/image';
@@ -75,7 +75,7 @@ const Courses = () => {
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
                 {(courses?.myCourses && (!isRefetching && !isLoading)) && courses?.myCourses?.map((course: any, idx: number) => (
                     <div 
-                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-auto w-[360px]"
+                        className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-auto w-[360px]"
                         key={idx}
                     >
                         <Image
@@ -85,6 +85,17 @@ const Courses = () => {
                             height={200}
                             className="w-full h-[200px] object-cover rounded-t-xl"
                         />
+                        <span className='w-fit text-xs font-semibold bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 px-3 py-1.5 rounded-full mb-3 border border-indigo-300 shadow-sm flex absolute top-2 left-2'>
+                            <span className="mr-1 opacity-70">Code:</span> {course?.course_code}
+                            <Copy
+                                size={13}
+                                className='ml-[10px] relative top-[2px] cursor-pointer'
+                                onClick={() => {
+                                    navigator.clipboard.writeText(course?.course_code);
+                                    message.success("Course code copied to clipboard");
+                                }}
+                            />
+                        </span>
                         <div className="p-5 min-h-[165px] relative pb-[70px]">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">
                                 {course?.course_name}
