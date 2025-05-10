@@ -4,13 +4,13 @@ import { Check, ChevronLeft, ChevronRight, NotebookPen, BotMessageSquare, Shield
 import { useParams } from "next/navigation"
 import "./style.scss"
 import Link from "next/link"
-import YouTubeEmbed from "@/app/components/YouTubeEmbed"
 import { message } from "antd"
 import { useQueryClient } from "react-query"
 import Notes from "./notes"
 import AskAI from "./askAI"
 import FinalTest from "./finalTest"
 import { useCourseStore } from "@/app/store/courseStore"
+import Content from "./content"
 
 export default function CourseContent() {
     const queryClient = useQueryClient();
@@ -274,14 +274,11 @@ export default function CourseContent() {
                                 setDoneQuiz={setDoneQuiz}
                             />
                         )
-                        : (
-                            <>
-                                <div className="rounded-md bg-white shadow-md p-6 w-full">
-                                    {sections[cur]?.video_link && <YouTubeEmbed videoUrl={sections[cur]?.video_link} />}
-                                    <div dangerouslySetInnerHTML={{ __html: sections[cur]?.section_content }} />
-                                </div>
-                            </>
-                        )
+                        : <Content 
+                            video={sections[cur]?.video_link}
+                            content={sections[cur]?.section_content}
+
+                        />
                     }
                 </div>
             </div>

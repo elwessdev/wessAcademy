@@ -56,7 +56,8 @@ async def signin(user):
             "username": db_user["username"],
             "email": db_user["email"],
             "major": db_user["major"],
-            "created_at": db_user["created_at"]
+            "blocked": db_user["blocked"],
+            "created_at": db_user["created_at"],
         }, 
         "token":token
     }

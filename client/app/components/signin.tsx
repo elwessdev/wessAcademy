@@ -43,6 +43,10 @@ export function Signin({onClose}: AuthModalProps) {
             const data = await res.json();
             // console.log(data,res);
             if(res.ok){
+                if(data?.user.blocked){
+                    setError("Your account has been blocked. Please contact support.");
+                    return;
+                }
                 localStorage.setItem("token", data.token);
                 // console.log(data)
                 setUserData(data.user);
