@@ -1,8 +1,8 @@
 from urllib import request
 from fastapi import APIRouter, Depends, HTTPException
 # from app.schemas.auth_schema import UserSignup, UserSignin
-from app.controllers import course_controller
-from app.utils.security import auth_required
+from controllers import course_controller
+from utils.security import auth_required
 
 router = APIRouter()
 

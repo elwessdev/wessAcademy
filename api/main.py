@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.db import engine, metadata, database
+from db import engine, metadata, database
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth_router, course_router, admin_router
+from routers import auth_router, course_router, admin_router
 
 # FastAPI app
 app = FastAPI()

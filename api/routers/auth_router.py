@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header, HTTPException
-from app.schemas.auth_schema import UserSignup, UserSignin
-from app.controllers import auth_controller
-from app.utils.security import verify_and_get_user
+from schemas.auth_schema import UserSignup, UserSignin
+from controllers import auth_controller
+from utils.security import verify_and_get_user
 
 router = APIRouter()
 

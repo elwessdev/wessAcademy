@@ -1,10 +1,10 @@
 from fastapi import HTTPException
-from app.db import database
-from app.models.user import users
-from app.models.course import course, userCourse, courseSections, courseProgress, courseNotes
+from db import database
+from models.user import users
+from models.course import course, userCourse, courseSections, courseProgress, courseNotes
 from sqlalchemy import select, update
-import app.utils.groq as groq
-import app.utils.Quiz as Quiz
+import utils.groq as groq
+import utils.Quiz as Quiz
 import json
 
 

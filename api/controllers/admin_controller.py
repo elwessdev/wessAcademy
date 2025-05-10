@@ -1,7 +1,7 @@
 from fastapi import HTTPException
-from app.db import database
-from app.models.user import users
-from app.models.course import course, userCourse, courseSections, majorsTable
+from db import database
+from models.user import users
+from models.course import course, userCourse, courseSections, majorsTable
 from sqlalchemy import select, func
 
 

@@ -3,8 +3,8 @@ from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import select
-from app.models.user import users
-from app.db import database
+from models.user import users
+from db import database
 
 from dotenv import load_dotenv
 import os
