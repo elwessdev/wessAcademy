@@ -4,9 +4,11 @@ import Link from "next/link";
 import { CirclePlus, Search } from "lucide-react";
 import Sidebar from "@/app/home/SideBar";
 import JoinCourseCode from "../components/joinCourseCode";
+import { usePathname } from "next/navigation";
 
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname();
     const [openJoinCourse, setOpenJoinCourse] = React.useState(false);
     return (
         <div className="min-h-screen bg-gray-50">
@@ -21,16 +23,34 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                     <div className="bg-white shadow-sm py-4 px-8 flex justify-between items-center">
                         <div className="flex space-x-8">
                             <Link
-                                href="#"
-                                className="text-indigo-600 font-medium border-b-2 border-indigo-600 pb-1"
+                                href="/home"
+                                className={`${
+                                    pathname === "/home" 
+                                        ? "text-indigo-600 font-medium border-b-2 border-indigo-600 pb-1" 
+                                        : "text-gray-600 hover:text-indigo-600 transition-colors"
+                                }`}
                             >
                                 Courses
                             </Link>
                             <Link
-                                href="#"
-                                className="text-gray-600 hover:text-indigo-600 transition-colors"
+                                href="/home/my-courses"
+                                className={`${
+                                    pathname === "/home/my-courses" 
+                                        ? "text-indigo-600 font-medium border-b-2 border-indigo-600 pb-1" 
+                                        : "text-gray-600 hover:text-indigo-600 transition-colors"
+                                }`}
                             >
                                 My Courses
+                            </Link>
+                            <Link
+                                href="/home/favorite"
+                                className={`${
+                                    pathname === "/home/favorite" 
+                                        ? "text-indigo-600 font-medium border-b-2 border-indigo-600 pb-1" 
+                                        : "text-gray-600 hover:text-indigo-600 transition-colors"
+                                }`}
+                            >
+                                Favorite
                             </Link>
                             {/* <Link
                                 href="#"

@@ -1,14 +1,13 @@
 "use client"
 import { ChevronRight, Copy } from 'lucide-react'
-import useAuthStore from '../store/authStore'
-import { useQuery, useQueryClient } from 'react-query';
+import useAuthStore from '../../store/authStore'
+import { useQuery } from 'react-query';
 import Image from 'next/image';
 import { message } from 'antd';
 import Link from 'next/link';
 import axios from 'axios';
 
-const Courses = () => {
-    const queryClient = useQueryClient();
+const MyCourses = () => {
     const userData:any = useAuthStore((state:any) => state.userData);
 
     const {data:courses, isLoading, isRefetching, error} = useQuery({
@@ -27,39 +26,15 @@ const Courses = () => {
         refetchOnReconnect: false,
     })
 
-    const handleEnrollCourse = async(courseID:number) => {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/enrollCourse?courseID=${courseID}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                }
-            });
-            const data = await res.json();
-            if (res.ok) {
-                // message.success("Successfully enrolled in course!");
-                console.log(courses);
-                queryClient.invalidateQueries({ queryKey: ['courses'] });
-                queryClient.invalidateQueries({ queryKey: ['myCoursesSideBar'] });
-            } else {
-                console.error("Failed to enroll in course:", data);
-            }
-        } catch(error) {
-            console.error("Error enrolling in course:", error);
-        }
-    }
-
     return (
         <div className="h-[calc(100vh-74px)] overflow-auto">
-            {/* Page Title */}
             <div className="px-8 pt-8 pb-4">
-                <h1 className="text-2xl font-bold text-gray-800">Hi <span className='capitalize text-indigo-600'>{userData?.username}</span></h1>
+                <h1 className="text-2xl font-bold text-gray-800">My Courses</h1>
                 <p className="text-gray-500 mt-1">
-                    Good to see you! Let’s study.
+                    View your enrolled courses and track progress. Resume learning where you left off.
                 </p>
             </div>
-            {/* Content Grid */}
+
             <div className="flex flex-wrap p-8 gap-6">
                 {isLoading || isRefetching &&(
                     <div className="w-full flex justify-center items-center py-8">
@@ -143,39 +118,9 @@ const Courses = () => {
                         </div>
                     </div>
                 ))}
-                {(courses?.courses && (!isRefetching && !isLoading)) && courses?.courses?.map((course: any, idx: number) => (
-                    <div 
-                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto w-[360px] h-auto"
-                        key={idx}
-                    >
-                        <Image
-                            src={course?.course_image}
-                            alt="Course Image"
-                            width={360}
-                            height={200}
-                            className="w-full h-[200px] object-cover rounded-t-xl"
-                        />
-                        <div className="p-5 min-h-[165px] relative pb-[60px]">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                                {course?.course_name}
-                            </h3>
-                            <p className="text-gray-600 text-sm">
-                                {course?.course_description}
-                            </p>
-                            <div className="flex justify-center items-center absolute bottom-[10px] left-[18px] w-[90%]">
-                                <button 
-                                    className="px-[30px] py-[9px] rounded-[4px] bg-[#6665f1] text-white font-medium text-sm flex items-center transition-all duration-2000"
-                                    onClick={() => handleEnrollCourse(course?.id)}
-                                >
-                                    Start
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
             </div>
         </div>
     )
 }
 
-export default Courses
+export default MyCourses
