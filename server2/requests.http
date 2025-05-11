@@ -1,0 +1,11 @@
+### GET request to example server
+GET http://localhost:8080/api/favorite
+
+###
+POST http://localhost:8080/api/favorite
+Content-Type: application/json
+
+{
+    "userId":"5",
+    "courseId": "5476"
+}
