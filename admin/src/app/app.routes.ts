@@ -9,6 +9,7 @@ export const routes: Routes = [
     { path: "overview", component: OverviewComponent },
     { path: "courses", component: CoursesComponent },
     { path: "editor", component: CourseEditor },
+    { path: "editor/:id", component: CourseEditor },
     { path: "users", component: UsersComponent },
     { path: "**", redirectTo: "" },
 ]

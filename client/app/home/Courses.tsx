@@ -145,7 +145,7 @@ const Courses = () => {
                 ))}
                 {(courses?.courses && (!isRefetching && !isLoading)) && courses?.courses?.map((course: any, idx: number) => (
                     <div 
-                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto w-[360px] h-auto"
+                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto w-[360px] h-auto relative"
                         key={idx}
                     >
                         <Image
@@ -162,14 +162,14 @@ const Courses = () => {
                             <p className="text-gray-600 text-sm">
                                 {course?.course_description}
                             </p>
-                            <div className="flex justify-center items-center absolute bottom-[10px] left-[18px] w-[90%]">
-                                <button 
-                                    className="px-[30px] py-[9px] rounded-[4px] bg-[#6665f1] text-white font-medium text-sm flex items-center transition-all duration-2000"
-                                    onClick={() => handleEnrollCourse(course?.id)}
-                                >
-                                    Start
-                                </button>
-                            </div>
+                        </div>
+                        <div className="flex justify-center items-center absolute bottom-[10px] left-[18px] w-[90%]">
+                            <button 
+                                className="px-[30px] py-[9px] rounded-[4px] bg-[#6665f1] text-white font-medium text-sm flex items-center transition-all duration-2000"
+                                onClick={() => handleEnrollCourse(course?.id)}
+                            >
+                                Start
+                            </button>
                         </div>
                     </div>
                 ))}

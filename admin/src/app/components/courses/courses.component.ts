@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { OverviewApiService } from '../../services/overview-api.service';
-import { filter } from 'rxjs';
 
 interface Major {
   name: string;
@@ -31,8 +30,8 @@ interface Major {
     Toast
   ],
   templateUrl: './courses.component.html',
-  styleUrl: './courses.component.scss',
   providers: [MessageService],
+  styleUrls: ['./courses.component.scss']
 })
 export class CoursesComponent {
   courses: any[] = [];
@@ -74,6 +73,10 @@ export class CoursesComponent {
 
   goToEditor() {
     this.router.navigate(['/editor']);
+  }
+
+  viewCourse(courseID: number) {
+    this.router.navigate(['/editor', courseID]);
   }
 
   deleteCourse(courseID: number) {

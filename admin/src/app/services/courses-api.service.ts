@@ -10,15 +10,23 @@ export class CoursesApiService {
 
   constructor(private http: HttpClient) {}
 
+  // Fetch all courses
   getCourses(): Observable<any> {
     return this.http.get(`${this.apiUrl}/get_all_courses`);
   }
 
+  // Delete a course
   deleteCourse(courseId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete_course/${courseId}`);
   }
 
+  // Add a new course
   addCourse(courseData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/add_course`, courseData);
+  }
+
+  // Get Course Details
+  getCourseDetails(courseId: any): Observable<any> {
+    return this.http.get(`${this.apiUrl}/courseDetails/${courseId}`);
   }
 }

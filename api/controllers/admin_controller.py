@@ -3,6 +3,8 @@ from db import database
 from models.user import users
 from models.course import course, userCourse, courseSections, majorsTable
 from sqlalchemy import select, func
+import re
+import random
 
 
 # Get Total Users, Courses, and Majors
@@ -108,13 +110,25 @@ async def deleteCourse(course_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Add Course
+def generateCourseCode(course_name: str):
+    words = re.sub(r'[^\w\s]', '', course_name).split()
+    if len(words) == 1:
+        code = words[0][:3]
+    else:
+        code = ''.join(word[0] for word in words[:len(words)])
+    num_chars = 10 - len(code)
+    if num_chars > 0:
+        code += ''.join(str(random.randint(0, 9)) for _ in range(min(num_chars, 7)))
+    return code.lower()
+
 async def addCourse(course_data: dict):
     try:
         query = course.insert().values(
             course_image=course_data["courseImage"],
             course_name=course_data["title"],
             course_description=course_data["description"],
-            course_major=course_data["majors"]
+            course_major=course_data["majors"],
+            course_code=generateCourseCode(course_data["title"])
         )
         result = await database.execute(query)
 
@@ -128,6 +142,7 @@ async def addCourse(course_data: dict):
                 section_title=section["title"],
                 section_description=section["description"],
                 section_content=section["content"],
+                video_link=section["video"]
             )
             await database.execute(query)
         
@@ -168,6 +183,23 @@ async def unblockUser(user_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Get Course Details
+async def getCourseDetails(course_id: str):
+    try:
+        courseDetails = await database.fetch_one(select(course).where(course.c.id == int(course_id)))
+        if courseDetails is None:
+            raise HTTPException(status_code=404, detail="Could not fetch course details")
+        
+        sections_data = await database.fetch_all(
+            select(courseSections).where(courseSections.c.course_id == int(course_id)).order_by(courseSections.c.section_number)
+        )
+
+        return {
+            "courseDetails": courseDetails,
+            "courseSections": sections_data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 

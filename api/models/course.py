@@ -47,16 +47,16 @@ majorsTable = Table(
     Column("created_at", DateTime, server_default=func.now(), nullable=False),
 )
 
-courseProgress = Table(
-    "course_progress",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("user_id", Integer, nullable=False),
-    Column("course_id", Integer, nullable=False),
-    Column("last_progress", Integer, nullable=False),
-    Column("total_sections", Integer, nullable=False),
-    Column("created_at", DateTime, server_default=func.now(), nullable=False),
-)
+# courseProgress = Table(
+#     "course_progress",
+#     metadata,
+#     Column("id", Integer, primary_key=True),
+#     Column("user_id", Integer, nullable=False),
+#     Column("course_id", Integer, nullable=False),
+#     Column("last_progress", Integer, nullable=False),
+#     Column("total_sections", Integer, nullable=False),
+#     Column("created_at", DateTime, server_default=func.now(), nullable=False),
+# )
 
 courseNotes = Table(
     "course_notes",

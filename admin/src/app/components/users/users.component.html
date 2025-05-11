@@ -16,6 +16,7 @@
                     <th class="w-1/5 p-3 text-left font-semibold">Name</th>
                     <th class="w-1/5 p-3 text-left font-semibold">Email</th>
                     <th class="w-1/5 p-3 text-left font-semibold">Major</th>
+                    <th class="w-1/5 p-3 text-left font-semibold">Status</th>
                     <th class="w-1/5 p-3 text-left font-semibold">Joined Date</th>
                     <th class="w-1/5 p-3 text-left font-semibold">Options</th>
                 </tr>
@@ -27,8 +28,20 @@
                     <td>
                         <p class="">{{ user.major.split("-").join(" ") }}</p>
                     </td>
-                    <td>{{ user.created_at | date: 'medium' }}</td>
                     <td>
+                        <p
+                            class="text-sm font-semibold"
+                            [ngClass]="{
+                                'text-green-500': !user.blocked,
+                                'text-red-500': user.blocked
+                            }"
+                        >
+                            {{ user.blocked ? "Blocked" : "Active" }}
+                        </p>
+                    </td>
+                    <td>{{ user.created_at | date: 'medium' }}</td>
+                    <td class="flex gap-2">
+                        <p-button>Courses</p-button>
                         <p-button *ngIf="!user.blocked" label="Block" icon="" (onClick)="blockUser(user.id)" />
                         <p-button *ngIf="user.blocked" label="UnBlock" icon="" (onClick)="unBlocked(user.id)" />
                     </td>

@@ -28,13 +28,16 @@
                 <h2 class="font-medium text-[18px]">Section {{section.number}}</h2>
                 <input pInputText [(ngModel)]="section.title" type="text"  placeholder="Section title" class="w-[100%]" />
                 <textarea [(ngModel)]="section.description" pTextarea placeholder="Small description about section" class="w-[100%] resize-none" rows="3"></textarea>
+                <input pInputText [(ngModel)]="section.video" type="text"  placeholder="Youtube Video Link (optional)" class="w-[100%]" />
                 <quill-editor [(ngModel)]="section.content"></quill-editor>
             </div>
         </div>
     </div>
     <div class="w-[80%] mx-auto mt-4 flex items-center justify-center">
         <p-button label="Cancel" icon="pi pi-times" class="mr-2" (onClick)="cancelEditor()" />
-        <p-button label="Save" icon="pi pi-check" (onClick)="saveCourse()" />
+        <p-button *ngIf="!isEditing" label="Add" icon="pi pi-check" (onClick)="saveCourse()" />
+        <p-button *ngIf="isEditing" label="Save" icon="pi pi-check" (onClick)="saveEdit()" />
+
     </div>
     
 </div>

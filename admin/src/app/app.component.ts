@@ -1,6 +1,6 @@
 import { Component } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { SidebarComponent } from "./components/SideBar/sidebar.component"
+import { SidebarComponent } from "./components/sidebar.component"
 import { DashboardComponent } from "./components/dashboard.component"
 
 @Component({
