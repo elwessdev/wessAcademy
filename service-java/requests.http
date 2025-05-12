@@ -9,3 +9,9 @@ Content-Type: application/json
     "userId":"5",
     "courseId": "5476"
 }
+
+###
+DELETE http://localhost:8080/api/favorite/6821227b7324da7b508b6b94
+
+###
+GET http://localhost:8080/api/favorite/check?userId=5&courseId=456
