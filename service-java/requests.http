@@ -1,5 +1,5 @@
 ### GET request to example server
-GET http://localhost:8080/api/favorite
+GET http://localhost:8081/api/favorite
 
 ###
 POST http://localhost:8080/api/favorite
@@ -11,7 +11,10 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8080/api/favorite/6821227b7324da7b508b6b94
+DELETE http://localhost:8081/api/favorite/6821217b4823dc2452d45bb9
 
 ###
-GET http://localhost:8080/api/favorite/check?userId=5&courseId=456
+GET http://localhost:8081/api/favorite/check?userId=5&courseId=456
+
+###
+GET http://localhost:8081/api/favorite/getByUser?userId=5

@@ -77,5 +77,23 @@ export const useCourseStore = create((set,get)=>({
         } catch (error) {
             console.error("Error joining course:", error);
         }
+    },
+
+    addFavoriteCourse: async(userId: number, courseId:number) => {
+        try {
+            const res = await axios.post(`http://localhost:8081/api/favorite`,{userId,courseId});
+            return res.data;
+        } catch (error) {
+            console.error("Error adding favorite course:", error);
+        }
+    },
+
+    removeFavoriteCourse: async(userId: number, courseId:number) => {
+        try {
+            const res = await axios.delete(`http://localhost:8081/api/favorite`,{data:{userId,courseId}});
+            return res.data;
+        } catch (error) {
+            console.error("Error removing favorite course:", error);
+        }
     }
 }));

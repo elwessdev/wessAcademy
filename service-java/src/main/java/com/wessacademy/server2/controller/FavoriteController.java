@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/favorite")
+@CrossOrigin(origins = "http://localhost:3000")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -40,5 +41,10 @@ public class FavoriteController {
     public ResponseEntity<Boolean> checkFavorite(@RequestParam String userId, @RequestParam String courseId) {
         boolean exists = favoriteService.existsByUserIdAndCourseId(userId, courseId);
         return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/getByUser")
+    public ResponseEntity<List<Favorite>> getFavoritesByUser(@RequestParam String userId) {
+        return ResponseEntity.ok(favoriteService.getFavoritesByUserId(userId));
     }
 }

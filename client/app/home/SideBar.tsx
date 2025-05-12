@@ -1,5 +1,4 @@
 "use client"
-
 import { Settings, LogOut, ChevronRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
