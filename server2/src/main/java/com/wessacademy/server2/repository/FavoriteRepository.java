@@ -12,4 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public interface FavoriteRepository extends MongoRepository<Favorite, String> {}
+public interface FavoriteRepository extends MongoRepository<Favorite, String> {
+    boolean existsByUserIdAndCourseId(String userId, String courseId);
+}

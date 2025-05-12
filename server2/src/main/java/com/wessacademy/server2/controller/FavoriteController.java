@@ -30,9 +30,15 @@ public class FavoriteController {
         return ResponseEntity.ok("Favorite added successfully");
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<String> deleteFavoriteById(@RequestBody String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteFavoriteById(@PathVariable String id) {
         favoriteService.deleteFavoriteById(id);
         return ResponseEntity.ok("Favorite deleted successfully");
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkFavorite(@RequestParam String userId, @RequestParam String courseId) {
+        boolean exists = favoriteService.existsByUserIdAndCourseId(userId, courseId);
+        return ResponseEntity.ok(exists);
     }
 }

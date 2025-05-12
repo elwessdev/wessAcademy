@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.wessAcademy</groupId>
-    <artifactId>server2</artifactId>
+    <artifactId>service-java</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>server2</name>
     <description>server2</description>

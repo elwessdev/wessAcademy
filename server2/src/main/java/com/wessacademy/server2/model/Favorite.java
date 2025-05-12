@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @ToString
-public class Favorite {
+public class Favorite implements java.io.Serializable {
     @Id
     private String id;
     private String userId;
