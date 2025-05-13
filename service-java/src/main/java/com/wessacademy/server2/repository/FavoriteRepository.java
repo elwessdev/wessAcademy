@@ -7,6 +7,6 @@ import java.util.List;
 
 
 public interface FavoriteRepository extends MongoRepository<Favorite, String> {
-    boolean existsByUserIdAndCourseId(String userId, String courseId);
-    List<Favorite> getFavoritesByUserId(String userId);
+    boolean existsByUserIdAndCourseId(int userId, int courseId);
+    List<Favorite> getFavoritesByUserId(int userId);
 }

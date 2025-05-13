@@ -31,12 +31,12 @@ public class FavoriteService {
     }
 
     @Cacheable(value = "favoriteCheck", key = "#userId+'-'+#courseId")
-    public boolean existsByUserIdAndCourseId(String userId, String courseId) {
+    public boolean existsByUserIdAndCourseId(int userId, int courseId) {
         return favoriteRepository.existsByUserIdAndCourseId(userId, courseId);
     }
 
     @Cacheable(value = "favoritesByUser", key = "#userId")
-    public List<Favorite> getFavoritesByUserId(String userId) {
+    public List<Favorite> getFavoritesByUserId(int userId) {
         return favoriteRepository.getFavoritesByUserId(userId);
     }
 }

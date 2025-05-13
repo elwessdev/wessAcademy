@@ -38,13 +38,13 @@ public class FavoriteController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<Boolean> checkFavorite(@RequestParam String userId, @RequestParam String courseId) {
+    public ResponseEntity<Boolean> checkFavorite(@RequestParam int userId, @RequestParam int courseId) {
         boolean exists = favoriteService.existsByUserIdAndCourseId(userId, courseId);
         return ResponseEntity.ok(exists);
     }
 
     @GetMapping("/getByUser")
-    public ResponseEntity<List<Favorite>> getFavoritesByUser(@RequestParam String userId) {
+    public ResponseEntity<List<Favorite>> getFavoritesByUser(@RequestParam int userId) {
         return ResponseEntity.ok(favoriteService.getFavoritesByUserId(userId));
     }
 }

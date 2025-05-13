@@ -13,6 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Favorite implements java.io.Serializable {
     @Id
     private String id;
-    private String userId;
-    private String courseId;
+    private int userId;
+    private int courseId;
 }

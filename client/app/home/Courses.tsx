@@ -7,42 +7,24 @@ import { message, Tooltip } from 'antd';
 import Link from 'next/link';
 import axios from 'axios';
 import { useCourseStore } from '../store/courseStore';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useFavoriteStore } from '../store/favoriteStore';
 
 const Courses = () => {
     const queryClient = useQueryClient();
     const userData:any = useAuthStore((state:any) => state.userData);
     const addFavoriteCourse = useCourseStore((state:any) => state.addFavoriteCourse);
-    const [myFavoriteCoursesIds,setMyFavoriteCoursesIds] = useState<any>(
-        new Map()
-    );
+    const getFavorites = useFavoriteStore((state:any) => state.getFavorites);
+    const favorites = useFavoriteStore((state:any) => state.favorites);
 
-    console.log("User data", userData);
-
-    const {data:myFavoriteCourses, isLoading:favoriteLoad, isRefetching:favoriteRefrech, error:favoriteError} = useQuery({
-        queryKey: ['myFavoriteCourses'],
-        queryFn: async()=>{
-            const res = await axios.get(`http://localhost:8081/api/favorite/getByUser?userId=${userData?.id}`);
-            if(res.status === 200){
-                let ids = new Map()
-                res.data.forEach((course:any) => {
-                    ids.set(parseInt(course.courseId), {
-                        id: course.id,
-                        courseId: course.courseId,
-                        userId: course.userId
-                    });
-                });
-                setMyFavoriteCoursesIds(ids);
-                // console.log("Favorite courses ids", ids);
-            }
-            return res.data;
-        },
-        enabled: !!userData,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-    })
-
+    // console.log("User data", userData);
     // console.log("Favorite courses", myFavoriteCourses);
+
+    useEffect(()=>{
+        if(userData?.id){
+            getFavorites(userData?.id);
+        }
+    },[])
 
     const {data:courses, isLoading, isRefetching, error} = useQuery({
         queryKey: ['courses'],
@@ -88,8 +70,8 @@ const Courses = () => {
         message.success("Course added to favorites");
     }
 
-    const handleRemoveFavorite = async(courseID:number) => {
-        console.log("Removing favorite course", courseID);
+    const handleRemoveFavorite = async(favoriteId:string) => {
+        console.log(favoriteId);
     }
 
     return (
@@ -183,11 +165,11 @@ const Courses = () => {
                                 </div>
                             </div>
                         </div>
-                        {myFavoriteCoursesIds.has(course?.course_id)
+                        {favorites.has(course?.course_id)
                             ? <Tooltip title="Remove From Favorite">
                                 <button 
                                     className='absolute top-2 right-2 p-1.5 bg-indigo-700 rounded-full shadow-sm hover:shadow hover:bg-indigo-700 transition-all duration-200 border border-indigo-200'
-                                    onClick={() => handleRemoveFavorite(myFavoriteCoursesIds.get(course?.course_id)?.id)}
+                                    onClick={() => handleRemoveFavorite(favorites.get(course?.course_id))}
                                 >
                                     <BookmarkPlus size={18} className="text-white" />
                                 </button>
@@ -231,11 +213,11 @@ const Courses = () => {
                                 Start
                             </button>
                         </div>
-                        {myFavoriteCoursesIds.has(course?.course_id) 
+                        {favorites.has(course?.course_id) 
                             ? <Tooltip title="Remove From Favorite">
                                 <button 
                                     className='absolute top-2 right-2 p-1.5 bg-indigo-700 rounded-full shadow-sm hover:shadow hover:bg-indigo-700 transition-all duration-200 border border-indigo-200'
-                                    onClick={() => handleRemoveFavorite(course?.course_id)}
+                                    onClick={() => handleRemoveFavorite(favorites.get(course?.course_id))}
                                 >
                                     <BookmarkPlus size={18} className="text-white" />
                                 </button>
