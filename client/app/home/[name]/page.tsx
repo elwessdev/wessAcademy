@@ -141,12 +141,12 @@ export default function CourseContent() {
             </div>
             <div className="w-full flex gap-2 mb-[20px] justify-between select-none">
                 <div className="flex gap-2">
-                    <button 
+                    {/* <button 
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
                     >
                         <BookCopy size={18} />
                         <span className="font-[18px]">Books</span>
-                    </button>
+                    </button> */}
                     <button 
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
                         onClick={() => setNotesOpen(true)}

@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';
 import {create} from 'zustand';
 
@@ -15,11 +16,42 @@ export const useFavoriteStore = create((set,get:any)=>({
                         )
                     })
                 });
-                console.log(get().favorites);
+                // console.log(get().favorites);
             }
         } catch(err){
             console.log("Error fetching favorite courses", err);
         }
-    }
+    },
+
+    addFavoriteCourse: async(userId: number, courseId:number) => {
+        console.log(userId,courseId);
+        try {
+            const res = await axios.post(`http://localhost:8081/api/favorite`,{userId,courseId});
+            message.success("Course added to favorites");
+            set({
+                favorites: new Map(
+                    [...get().favorites, [courseId, res.data.id]]
+                )
+            })
+            return res.data;
+        } catch (error) {
+            console.error("Error adding favorite course:", error);
+        }
+    },
+
+    removeFavoriteCourse: async(favoriteId: string) => {
+        try {
+            const res = await axios.delete(`http://localhost:8081/api/favorite/${favoriteId}`);
+            message.success("Course removed from favorites");
+            set({
+                favorites: new Map(
+                    [...get().favorites].filter(([key,value]) => value !== favoriteId)
+                )
+            })
+            return res.data;
+        } catch (error) {
+            console.error("Error removing favorite course:", error);
+        }
+    },
 
 }))

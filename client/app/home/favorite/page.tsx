@@ -1,17 +1,23 @@
 "use client"
-import { ChevronRight, Copy } from 'lucide-react'
+import { BookmarkPlus, ChevronRight, Copy } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import Image from 'next/image';
-import { message } from 'antd';
+import { message, Tooltip } from 'antd';
 import Link from 'next/link';
 import axios from 'axios';
+import { useState } from 'react';
+import { useFavoriteStore } from '@/app/store/favoriteStore';
 
-const MyCourses = () => {
+const Favorite = () => {
+    const queryClient = useQueryClient();
     const userData:any = useAuthStore((state:any) => state.userData);
+    const favorites = useFavoriteStore((state:any) => state.favorites);
+    const removeFavoriteCourse = useFavoriteStore((state:any) => state.removeFavoriteCourse);
+    const [courses, setCourses] = useState<any>(null);
 
-    const {data:courses, isLoading, isRefetching, error} = useQuery({
-        queryKey: ['courses'],
+    const {data, isLoading, isRefetching, error} = useQuery({
+        queryKey: ['favoriteCourses', favorites],
         queryFn: async()=>{
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/course/coursesList`,{
                 headers: {
@@ -19,19 +25,36 @@ const MyCourses = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 }
             });
-            return res.data;
+            const responseData = res.data;
+            console.log(favorites);
+            setCourses([
+                ...responseData.courses?.filter((course:any) => favorites.has(course.id)),
+                ...responseData.myCourses?.filter((course:any) => favorites.has(course.course_id))
+            ]);
+            console.log([
+                ...responseData.courses?.filter((course:any) => favorites.has(course.id)),
+                ...responseData.myCourses?.filter((course:any) => favorites.has(course.course_id))
+            ]);
+            return responseData;
         },
         enabled: !!userData,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
     })
 
+    const handleRemoveFavorite = async(favoriteId:string) => {
+        await removeFavoriteCourse(favoriteId);
+        // setTimeout(()=>{
+        //     queryClient.invalidateQueries({ queryKey: ['favoriteCourses'] });
+        // },3000)
+    }
+
     return (
         <div className="h-[calc(100vh-74px)] overflow-auto">
             <div className="px-8 pt-8 pb-4">
-                <h1 className="text-2xl font-bold text-gray-800">My Courses</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Favorite Courses</h1>
                 <p className="text-gray-500 mt-1">
-                    View your enrolled courses and track progress. Resume learning where you left off.
+                    View your favorite courses and track progress. Resume learning where you left off.
                 </p>
             </div>
 
@@ -48,7 +71,7 @@ const MyCourses = () => {
                     </div>
                 )}
                 {error && <div className="text-center text-red-500">Error loading courses</div>}
-                {(courses?.myCourses && (!isRefetching && !isLoading)) && courses?.myCourses?.map((course: any, idx: number) => (
+                {(courses && (!isRefetching && !isLoading)) && courses?.map((course: any, idx: number) => (
                     <div 
                         className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-auto h-auto w-[360px]"
                         key={idx}
@@ -71,7 +94,7 @@ const MyCourses = () => {
                                 }}
                             />
                         </span>
-                        <div className="p-5 min-h-[165px] relative pb-[70px]">
+                        <div className="p-5 min-h-[165px] relative">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">
                                 {course?.course_name}
                             </h3>
@@ -79,48 +102,27 @@ const MyCourses = () => {
                                 {course?.course_description}
                             </p>
                         </div>
-                        <div className="absolute bottom-[10px] left-[18px] w-[90%] flex-wrap">
-                            <div className='w-full flex justify-between items-center'>
-                                <span className={`
-                                        text-xs font-medium bg-amber-50 px-2 py-1 rounded-full
-                                        ${
-                                            course?.status === 'Completed'
-                                            ?'text-indigo-600 bg-indigo-100'
-                                            :'text-amber-600 bg-amber-100'
-                                        }
-                                    `}>
-                                    {course?.status}
-                                </span>
-                                <Link href={`/home/course-${course?.course_name.split(" ").join("-").toLowerCase()}-${course?.course_id}`} className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center cursor-pointer">
-                                    {
-                                        course?.status === 'completed' ? 'View' : 'Continue'
-                                    }
-                                    <ChevronRight size={16} className="ml-1" />
-                                </Link>
-                            </div>
-                            <div className="flex items-center mt-[8px]">
-                                <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
-                                    <div 
-                                        className="bg-indigo-500 h-full rounded-full transition-all duration-200" 
-                                        style={{ width: `
-                                            ${course?.progress == -1 ? 100 : Math.floor(course?.progress / course?.total_section * 100)}%
-                                        ` }}
-                                    ></div>
-                                </div>
-                                <span className="text-xs text-gray-500 ml-2">
-                                    {course?.progress == -1
-                                        ? "100"
-                                        : Math.floor(course?.progress / course?.total_section * 100)
-                                    }
-                                    %
-                                </span>
-                            </div>
-                        </div>
+                        <Tooltip title="Remove From Favorite">
+                            <button 
+                                className='absolute top-2 right-2 p-1.5 bg-indigo-700 rounded-full shadow-sm hover:shadow hover:bg-indigo-700 transition-all duration-200 border border-indigo-200'
+                                onClick={() => handleRemoveFavorite(favorites.get(course?.id||course?.course_id))}
+                            >
+                                <BookmarkPlus size={18} className="text-white" />
+                            </button>
+                        </Tooltip>
                     </div>
                 ))}
+                {(courses && (!isRefetching && !isLoading)) && courses?.length === 0 && (
+                    <div className="w-full flex justify-center items-center py-8">
+                        <div className="flex flex-col items-center gap-3">
+                            <BookmarkPlus size={40} className="text-indigo-600" />
+                            <p className="text-gray-600 font-medium">No favorite courses found</p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )
 }
 
-export default MyCourses
+export default Favorite

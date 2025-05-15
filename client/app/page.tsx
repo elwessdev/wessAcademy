@@ -38,26 +38,29 @@ export default function Home() {
                   A community with high expectation and high academic achievement
                 </p>
                 <div className="mt-8">
-                  <a
-                    href="#services"
+                  <button
                     className="inline-block px-8 py-3 bg-indigo-500 text-white font-medium rounded-lg hover:bg-indigo-600 transition-all duration-200 outline-none"
+                    onClick={()=>{
+                      if (signInModel.current) {
+                        signInModel.current.showModal();
+                      }
+                    }}
                   >
                     Get Started
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
-
             {/* Right column */}
             <div className="bg-indigo-500 p-8 lg:p-12 relative h-[100vh]">
               {/* Navigation */}
               <nav className="flex justify-end items-center space-x-6 text-white mb-8 ">
-                <a href="#about-us" className="hover:text-indigo-200 transition-all duration-200">
+                {/* <a href="#about-us" className="hover:text-indigo-200 transition-all duration-200">
                   About us
                 </a>
                 <a href="#services" className="hover:text-indigo-200 transition-all duration-200">
                   Service
-                </a>
+                </a> */}
                 {/* <Link href="/" className="hover:text-indigo-200 transition-all duration-200">
                   Courses
                 </Link>
@@ -138,7 +141,6 @@ export default function Home() {
               <h2 className="text-3xl font-bold mb-12 text-center text-gray-900">Our Services</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Service 1 */}
                 <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="bg-indigo-100 p-3 rounded-lg w-fit mb-6">
                     <BookOpen className="h-6 w-6 text-indigo-600" />
@@ -147,26 +149,7 @@ export default function Home() {
                   <p className="text-gray-600 mb-6">
                     Access to a wide variety of courses taught by experienced instructors, available anytime and anywhere.
                   </p>
-                  <Link href="/home" className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
-                    View courses <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
                 </div>
-                
-                {/* Service 2 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
-                  <div className="bg-indigo-100 p-3 rounded-lg w-fit mb-6">
-                    <Users className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Study Groups</h3>
-                  <p className="text-gray-600 mb-6">
-                    Join collaborative learning communities where students support each other while tackling complex topics.
-                  </p>
-                  <Link href="/home" className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
-                    Join a group <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </div>
-                
-                {/* Service 3 */}
                 <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="bg-indigo-100 p-3 rounded-lg w-fit mb-6">
                     <Award className="h-6 w-6 text-indigo-600" />
@@ -175,26 +158,7 @@ export default function Home() {
                   <p className="text-gray-600 mb-6">
                     Earn industry-recognized certificates to boost your resume and demonstrate your expertise.
                   </p>
-                  <Link href="/home" className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
-                    Explore certificates <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
                 </div>
-                
-                {/* Service 4 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
-                  <div className="bg-indigo-100 p-3 rounded-lg w-fit mb-6">
-                    <Lightbulb className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Mentorship</h3>
-                  <p className="text-gray-600 mb-6">
-                    One-on-one guidance from professionals who will help you navigate your educational journey.
-                  </p>
-                  <Link href="/home" className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
-                    Find a mentor <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </div>
-                
-                {/* Service 5 */}
                 <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="bg-indigo-100 p-3 rounded-lg w-fit mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-indigo-600">
@@ -205,76 +169,6 @@ export default function Home() {
                   <h3 className="text-xl font-bold mb-3">Skill Assessments</h3>
                   <p className="text-gray-600 mb-6">
                     Evaluate your strengths and areas for improvement with our comprehensive assessment tools.
-                  </p>
-                  <Link href="/home" className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
-                    Take an assessment <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </div>
-                
-                {/* Service 6 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
-                  <div className="bg-indigo-100 p-3 rounded-lg w-fit mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-indigo-600">
-                      <rect x="4" y="5" width="16" height="16" rx="2"></rect>
-                      <line x1="16" y1="3" x2="16" y2="7"></line>
-                      <line x1="8" y1="3" x2="8" y2="7"></line>
-                      <line x1="4" y1="11" x2="20" y2="11"></line>
-                      <line x1="10" y1="16" x2="14" y2="16"></line>
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Career Planning</h3>
-                  <p className="text-gray-600 mb-6">
-                    Get guidance on career pathways and the educational steps needed to reach your professional goals.
-                  </p>
-                  <Link href="/home" className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
-                    Plan your career <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* About Us Section */}
-          <section id="about-us" className="bg-indigo-50 py-16 px-8">
-            <div className="container mx-auto max-w-6xl">
-              <h2 className="text-3xl font-bold mb-12 text-center text-gray-900">About Us</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
-                <div>
-                  <h3 className="text-2xl font-bold mb-6 text-gray-900">Our Story</h3>
-                  <div className="space-y-4 text-gray-600">
-                    <p>
-                      WessAcademy was founded in 2020 with a simple but powerful vision: to make quality education accessible to everyone, regardless of their location or background.
-                    </p>
-                    <p>
-                      What started as a small team of passionate educators has grown into a comprehensive learning platform that serves thousands of students worldwide. Our journey has been guided by the belief that education is the most powerful tool for changing lives and building a better future.
-                    </p>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-indigo-100 rounded-full"></div>
-                  <Image
-                    src="/home.jpg"
-                    alt="Students learning together"
-                    width={500}
-                    height={400}
-                    className="rounded-xl shadow-lg mx-auto"
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
-                <div className="bg-white p-8 rounded-xl shadow-sm">
-                  <h3 className="text-2xl font-bold mb-4 text-indigo-600">Our Mission</h3>
-                  <p className="text-gray-600">
-                    To empower individuals through accessible, high-quality education that bridges the gap between academic learning and real-world application, enabling them to reach their full potential and make a positive impact on the world.
-                  </p>
-                </div>
-                
-                <div className="bg-white p-8 rounded-xl shadow-sm">
-                  <h3 className="text-2xl font-bold mb-4 text-indigo-600">Our Vision</h3>
-                  <p className="text-gray-600">
-                    To create a global community of lifelong learners equipped with the knowledge, skills, and confidence to tackle the challenges of tomorrow and drive innovation across all fields and industries.
                   </p>
                 </div>
               </div>
@@ -347,12 +241,16 @@ export default function Home() {
               <p className="text-indigo-100 max-w-2xl mx-auto mb-8">
                 Join thousands of students who have already advanced their education and careers with WessAcademy.
               </p>
-              <Link 
-                href="/home"
+              <button 
                 className="inline-block px-8 py-3 bg-white text-indigo-600 font-medium rounded-lg hover:bg-gray-100 transition-all duration-200"
+                onClick={()=>{
+                  if (signUpModel.current) {
+                    signUpModel.current.showModal();
+                  }
+                }}
               >
                 Get Started Today
-              </Link>
+              </button>
             </div>
           </section>
 
@@ -366,43 +264,38 @@ export default function Home() {
                     alt="wessAcademy logo"
                     width={150}
                     height={58}
-                    className="h-10 w-[150px] h-[58px] object-contain bg-white p-1 rounded"
+                    className="h-10 w-[150px] h-[58px] object-contain p-1 rounded"
                   />
                   <p className="text-gray-400 mt-2">A foundation for a better future</p>
                 </div>
                 <div className="flex flex-wrap gap-8">
-                  <a href="#" className="text-gray-300 hover:text-white">Home</a>
-                  <a href="#about-us" className="text-gray-300 hover:text-white">About Us</a>
-                  <a href="#services" className="text-gray-300 hover:text-white">Services</a>
-                  <Link href="/home" className="text-gray-300 hover:text-white">Courses</Link>
-                </div>
-              </div>
-              <div className="mt-8 pt-8 border-t border-gray-800 text-center md:text-left">
                 <p className="text-gray-400">© {new Date().getFullYear()} WessAcademy. All rights reserved.</p>
+                </div>
               </div>
             </div>
           </footer>
+
+          {/* Auth */}
+          <dialog ref={signInModel} id="signInModel" className="modal">
+            <div className="modal-box">
+              <Signin onClose={()=>{
+                if (signInModel.current) {
+                  signInModel.current.close();
+                }
+              }} />
+            </div>
+          </dialog>
+
+          <dialog ref={signUpModel} id="signUpModel" className="modal">
+            <div className="modal-box">
+              <Signup onClose={()=>{
+                if (signUpModel.current) {
+                  signUpModel.current.close();
+                }
+              }} />
+            </div>
+          </dialog>
         </div>
-
-        <dialog ref={signInModel} id="signInModel" className="modal">
-          <div className="modal-box">
-            <Signin onClose={()=>{
-              if (signInModel.current) {
-                signInModel.current.close();
-              }
-            }} />
-          </div>
-        </dialog>
-
-        <dialog ref={signUpModel} id="signUpModel" className="modal">
-          <div className="modal-box">
-            <Signup onClose={()=>{
-              if (signUpModel.current) {
-                signUpModel.current.close();
-              }
-            }} />
-          </div>
-        </dialog>
       </div>
     </div>
   )

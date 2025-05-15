@@ -52,6 +52,16 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
                             >
                                 Favorite
                             </Link>
+                            <Link
+                                href="/home/books"
+                                className={`${
+                                    pathname === "/home/books" 
+                                        ? "text-indigo-600 font-medium border-b-2 border-indigo-600 pb-1" 
+                                        : "text-gray-600 hover:text-indigo-600 transition-colors"
+                                }`}
+                            >
+                                Books
+                            </Link>
                             {/* <Link
                                 href="#"
                                 className="text-gray-600 hover:text-indigo-600 transition-colors"

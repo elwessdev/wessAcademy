@@ -1,6 +1,7 @@
 {
   "name": "admin",
   "version": "0.0.0",
+  "author": "Osama Benali",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -20,22 +20,22 @@ public class FavoriteService {
         return favoriteRepository.findAll();
     }
 
-    @CacheEvict(value = {"favorites","favoritesByUser","favoriteCheck"}, allEntries = true)
-    public void addFavorite(Favorite favorite) {
-        favoriteRepository.save(favorite);
+    @CacheEvict(value = "favorites", allEntries = true)
+    public Favorite addFavorite(Favorite favorite) {
+        return favoriteRepository.save(favorite);
     }
 
-    @CacheEvict(value = {"favorites","favoritesByUser","favoriteCheck"}, allEntries = true)
+    @CacheEvict(value = "favorites", allEntries = true)
     public void deleteFavoriteById(String id) {
         favoriteRepository.deleteById(id);
     }
 
-    @Cacheable(value = "favoriteCheck", key = "#userId+'-'+#courseId")
+    @Cacheable(value = "favorites", key = "#userId+'-'+#courseId")
     public boolean existsByUserIdAndCourseId(int userId, int courseId) {
         return favoriteRepository.existsByUserIdAndCourseId(userId, courseId);
     }
 
-    @Cacheable(value = "favoritesByUser", key = "#userId")
+    @Cacheable(value = "favorites", key = "#userId")
     public List<Favorite> getFavoritesByUserId(int userId) {
         return favoriteRepository.getFavoritesByUserId(userId);
     }

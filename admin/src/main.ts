@@ -4,3 +4,4 @@ import { AppComponent } from './app/app.component';
 
 bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));
+  console.log('%cDeveloped by Osama Benali', 'color: green; font-size: 18px; font-weight: bold;');

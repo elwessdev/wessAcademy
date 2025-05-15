@@ -8,6 +8,8 @@ import QueryClientProvider from "./hooks/QueryClientProvider"
 
 const inter = Inter({ subsets: ["latin"] })
 
+console.log('%cDeveloped by Osama Benali', 'color: green; font-size: 18px; font-weight: bold;');
+
 export const metadata: Metadata = {
   title: "wessAcademy - Foundation for a Better Future",
   description: "A community with high expectation and high academic achievement",
