@@ -74,6 +74,7 @@ A modern microservice-based online education platform for managing courses, stud
 - Add/Edit/Delete courses and sections
 - Built-in section editor  
 ![quiz](./screenshots/img12.png)
+![quiz](./screenshots/img14.png)
 
 ### 👥 Manage Users
 - Manage users  
