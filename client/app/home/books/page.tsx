@@ -93,7 +93,7 @@ function Books() {
                             <p className="text-gray-500 mt-1 text-sm">by {book?.book_author}</p> 
                         </div>
                         <div className="flex justify-between items-center absolute bottom-4 left-5 right-5">
-                            <span className="bg-blue-50 text-indigo-600 text-xs px-2 py-1 rounded-full">{book?.category || "Computer Science"}</span>
+                            <span className="bg-blue-50 text-indigo-600 text-xs px-2 py-1 rounded-full">{userData?.major?.replace(/-/g, " ")}</span>
                             <button 
                                 className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
                                 onClick={() => handleSummary(book?.book_name, book?.book_author)}

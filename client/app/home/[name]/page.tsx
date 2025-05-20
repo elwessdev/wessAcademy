@@ -127,6 +127,10 @@ export default function CourseContent() {
             return;
         }
         finishCourse(course.id);
+        message.success("Course completed successfully");
+        queryClient.invalidateQueries({queryKey: ['myCoursesSideBar']});
+        queryClient.invalidateQueries({queryKey: ['courses']});
+        window.location.href = "/home";
     }
 
     return (
