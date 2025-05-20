@@ -49,7 +49,7 @@ async def getBooks(major):
     books = scrape_books(major)
     for bookT in books:
         query = book.insert().values(
-            book_name=bookT['title'],
+            book_name=bookT['title'][:100],
             book_author=bookT['author'],
             book_cover=bookT['cover'],
             book_category=major

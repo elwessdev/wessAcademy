@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8081/api/favorite/6821d5a67e0ca831e9a59fd3
+DELETE http://localhost:8081/api/favorite/682cb609f700b4564738e080
 
 ###
 GET http://localhost:8081/api/favorite/check?userId=5&courseId=456

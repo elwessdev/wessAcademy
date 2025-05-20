@@ -1,5 +1,11 @@
 node_modules
-*.zip
+__pycache__
 .env
+*.zip
 *.sql
 *.excalidraw
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
